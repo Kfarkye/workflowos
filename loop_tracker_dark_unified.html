@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loop Tracker - WorkflowOS</title>
+    <style>
+        /* ===== WORKFLOWOS UNIFIED DESIGN SYSTEM ===== */
+        
+        :root {
+            /* Dark Theme Color Palette */
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #111111;
+            --bg-tertiary: #1a1a1a;
+            --bg-elevated: #222222;
+            --bg-card: #1e1e1e;
+            --bg-input: #2a2a2a;
+            
+            /* Text Colors */
+            --text-primary: #ffffff;
+            --text-secondary: #a3a3a3;
+            --text-tertiary: #666666;
+            --text-muted: #404040;
+            
+            /* Accent Colors */
+            --accent-primary: #3b82f6;
+            --accent-primary-hover: #2563eb;
+            --accent-secondary: #8b5cf6;
+            --accent-success: #10b981;
+            --accent-warning: #f59e0b;
+            --accent-danger: #ef4444;
+            
+            /* Borders & Dividers */
+            --border-subtle: #333333;
+            --border-medium: #404040;
+            --border-strong: #525252;
+            
+            /* Glass Effects */
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-hover: rgba(255, 255, 255, 0.05);
+            
+            /* Shadows */
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+            --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.6);
+            --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.7);
+            
+            /* Gradients */
+            --gradient-primary: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            --gradient-loop: linear-gradient(135deg, #8b5cf6, #6366f1);
+            --gradient-surface: linear-gradient(135deg, #1a1a1a, #222222);
+            --gradient-card: linear-gradient(135deg, #1e1e1e, #2a2a2a);
+            
+            /* Transitions */
+            --transition-fast: all 0.15s ease;
+            --transition-medium: all 0.25s ease;
+            --transition-slow: all 0.4s ease;
+            
+            /* Typography */
+            --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            --font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
+            
+            /* Spacing Scale */
+            --space-xs: 0.25rem;
+            --space-sm: 0.5rem;
+            --space-md: 0.75rem;
+            --space-lg: 1rem;
+            --space-xl: 1.5rem;
+            --space-2xl: 2rem;
+            --space-3xl: 3rem;
+            
+            /* Radius Scale */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-2xl: 20px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ===== NAVIGATION SYSTEM ===== */
+        
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: var(--space-lg) var(--space-2xl);
+            z-index: 1000;
+            transition: var(--transition-medium);
+        }
+
+        .nav-content {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: var(--space-lg);
+        }
+
+        .nav-menu-btn {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            padding: var(--space-sm);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition-medium);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+        }
+
+        .nav-menu-btn:hover {
+            background: var(--glass-hover);
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            transform: translateY(-1px);
+        }
+
+        .nav-brand {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-decoration: none;
+            letter-spacing: -0.025em;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: var(--space-md);
+            align-items: center;
+        }
+
+        .nav-btn {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            padding: var(--space-sm) var(--space-lg);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: var(--transition-medium);
+            cursor: pointer;
+        }
+
+        .nav-btn:hover {
+            background: var(--glass-hover);
+            color: var(--text-primary);
+            border-color: var(--accent-primary);
+            transform: translateY(-1px);
+        }
+
+        .nav-btn.primary {
+            background: var(--gradient-primary);
+            color: white;
+            border-color: var(--accent-primary);
+        }
+
+        .nav-btn.primary:hover {
+            background: var(--accent-primary-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* ===== CONTAINER & LAYOUT ===== */
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: calc(80px + var(--space-2xl)) var(--space-2xl) var(--space-2xl) var(--space-2xl);
+        }
+
+        /* ===== HEADER ===== */
+        
+        .header {
+            text-align: center;
+            margin-bottom: var(--space-3xl);
+            animation: slideInUp 0.6s ease-out;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-sm);
+            letter-spacing: -0.025em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-md);
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+            margin-bottom: var(--space-xl);
+        }
+
+        /* ===== CARD SYSTEM ===== */
+        
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-xl);
+            padding: var(--space-xl);
+            margin-bottom: var(--space-xl);
+            transition: var(--transition-medium);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .card:hover {
+            background: var(--bg-elevated);
+            border-color: var(--border-medium);
+        }
+
+        .card.glass {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+        }
+
+        .card.accent-loop {
+            border-color: var(--accent-secondary);
+        }
+
+        .card.accent-loop:hover {
+            border-color: #7c3aed;
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.2);
+        }
+
+        /* ===== PASTE NOTES SECTION ===== */
+        
+        .paste-notes-card {
+            background: var(--gradient-card);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .paste-notes-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-success), #34d399);
+            opacity: 0.6;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-lg);
+        }
+
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .paste-btn {
+            background: var(--accent-success);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            padding: var(--space-sm) var(--space-lg);
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-medium);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .paste-btn:hover {
+            background: #059669;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .notes-textarea {
+            width: 100%;
+            min-height: 140px;
+            padding: var(--space-lg);
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+            font-size: 0.875rem;
+            line-height: 1.6;
+            resize: vertical;
+            transition: var(--transition-fast);
+        }
+
+        .notes-textarea:focus {
+            outline: none;
+            border-color: var(--accent-success);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .notes-textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        .notes-actions {
+            display: flex;
+            gap: var(--space-sm);
+            margin-top: var(--space-lg);
+        }
+
+        .notes-action-btn {
+            flex: 1;
+            padding: var(--space-md) var(--space-lg);
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition-medium);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-sm);
+        }
+
+        .extract-btn {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .extract-btn:hover {
+            background: var(--accent-primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .clear-notes-btn {
+            background: var(--bg-elevated);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .clear-notes-btn:hover {
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+
+        /* ===== RECENT LOOPS ===== */
+        
+        .recent-loops-card {
+            background: var(--gradient-card);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .recent-loops-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gradient-primary);
+            opacity: 0.6;
+        }
+
+        .recent-loop-item {
+            background: var(--gradient-loop);
+            color: white;
+            padding: var(--space-lg) var(--space-xl);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-md);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition-medium);
+            border: none;
+            width: 100%;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+
+        .recent-loop-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
+            background: linear-gradient(135deg, #7c3aed, #5b21b6);
+        }
+
+        .recent-loop-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--text-tertiary);
+            font-style: italic;
+            padding: var(--space-xl);
+        }
+
+        /* ===== FORM SYSTEM ===== */
+        
+        .form-group {
+            margin-bottom: var(--space-xl);
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: var(--space-sm);
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: var(--space-lg);
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            transition: var(--transition-fast);
+            font-family: inherit;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+            font-family: var(--font-mono);
+            line-height: 1.6;
+        }
+
+        .form-row {
+            display: flex;
+            gap: var(--space-lg);
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        /* ===== BUTTON SYSTEM ===== */
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-sm);
+            padding: var(--space-lg) var(--space-2xl);
+            border: none;
+            border-radius: var(--radius-lg);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-medium);
+            text-decoration: none;
+            font-family: inherit;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+
+        .btn-primary {
+            background: var(--gradient-loop);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #7c3aed, #5b21b6);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--bg-elevated);
+            color: var(--text-primary);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-card);
+            border-color: var(--border-medium);
+            transform: translateY(-1px);
+        }
+
+        .button-group {
+            display: flex;
+            gap: var(--space-lg);
+            margin-bottom: var(--space-2xl);
+        }
+
+        .button-group .btn {
+            flex: 1;
+        }
+
+        /* ===== STATS SECTION ===== */
+        
+        .stats-card {
+            background: var(--gradient-surface);
+            border: 1px solid var(--border-medium);
+        }
+
+        .stats-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-lg);
+            text-align: center;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-md) 0;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .stat-value {
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        /* ===== HISTORY SECTION ===== */
+        
+        .history {
+            max-height: 400px;
+            overflow-y: auto;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+        }
+
+        .history::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .history::-webkit-scrollbar-track {
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+        }
+
+        .history::-webkit-scrollbar-thumb {
+            background: var(--border-medium);
+            border-radius: 10px;
+        }
+
+        .history::-webkit-scrollbar-thumb:hover {
+            background: var(--border-strong);
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: var(--space-lg) 0;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .history-content {
+            flex: 1;
+        }
+
+        .history-track {
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: var(--space-xs);
+            font-size: 0.95rem;
+        }
+
+        .history-details {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            line-height: 1.5;
+        }
+
+        .history-details a {
+            color: var(--accent-primary);
+            text-decoration: none;
+        }
+
+        .history-details a:hover {
+            color: var(--accent-primary-hover);
+            text-decoration: underline;
+        }
+
+        .history-time {
+            color: var(--text-tertiary);
+            font-size: 0.75rem;
+            text-align: right;
+            margin-left: var(--space-lg);
+            white-space: nowrap;
+        }
+
+        .mood-tag {
+            display: inline-block;
+            background: rgba(139, 92, 246, 0.2);
+            color: var(--accent-secondary);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-left: var(--space-sm);
+        }
+
+        /* ===== EXPORT SECTION ===== */
+        
+        .export-section {
+            margin-top: var(--space-xl);
+            padding-top: var(--space-xl);
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .export-buttons {
+            display: flex;
+            gap: var(--space-lg);
+        }
+
+        .btn-export {
+            flex: 1;
+            padding: var(--space-lg) var(--space-xl);
+            border: none;
+            border-radius: var(--radius-lg);
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-medium);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-sm);
+        }
+
+        .btn-csv {
+            background: var(--accent-success);
+            color: white;
+        }
+
+        .btn-csv:hover {
+            background: #059669;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-copy {
+            background: var(--accent-warning);
+            color: white;
+        }
+
+        .btn-copy:hover {
+            background: #d97706;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* ===== ANIMATIONS ===== */
+        
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        /* ===== RESPONSIVE DESIGN ===== */
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: calc(70px + var(--space-lg)) var(--space-lg) var(--space-lg) var(--space-lg);
+            }
+
+            .nav {
+                padding: var(--space-md) var(--space-lg);
+            }
+
+            .nav-actions {
+                gap: var(--space-sm);
+            }
+
+            .nav-btn {
+                padding: var(--space-sm) var(--space-md);
+                font-size: 0.8rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+                flex-direction: column;
+                gap: var(--space-sm);
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            .button-group {
+                flex-direction: column;
+                gap: var(--space-md);
+            }
+
+            .export-buttons {
+                flex-direction: column;
+                gap: var(--space-md);
+            }
+
+            .notes-actions {
+                flex-direction: column;
+            }
+
+            .card {
+                padding: var(--space-lg);
+            }
+
+            .history {
+                max-height: 300px;
+            }
+        }
+
+        /* ===== ACCESSIBILITY ===== */
+        
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        .nav-btn:focus,
+        .btn:focus,
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: 2px solid var(--accent-primary);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-content">
+            <div class="nav-left">
+                <button class="nav-menu-btn" onclick="goBack()">
+                    <span style="font-size: 14px;">←</span>
+                </button>
+                <a href="#" class="nav-brand">WorkflowOS</a>
+            </div>
+            <div class="nav-actions">
+                <a href="#" class="nav-btn" onclick="goBack()">Back to Dashboard</a>
+                <a href="#" class="nav-btn primary" onclick="showHelp()">Help</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🌀 Loop Tracker</h1>
+            <p>Transform your notes into structured insights</p>
+        </div>
+
+        <!-- Paste Notes Section -->
+        <div class="card paste-notes-card">
+            <div class="card-header">
+                <h3 class="card-title">📝 Import from Notes</h3>
+                <button class="paste-btn" onclick="pasteFromClipboard()">
+                    📋 Paste
+                </button>
+            </div>
+            <textarea 
+                class="notes-textarea" 
+                id="pastedNotes" 
+                placeholder="Paste your notes from WorkflowOS or other sources here...
+
+The system will help extract key information to populate the loop form below."></textarea>
+            <div class="notes-actions">
+                <button class="notes-action-btn extract-btn" onclick="extractFromNotes()">
+                    🔍 Extract Info
+                </button>
+                <button class="notes-action-btn clear-notes-btn" onclick="clearPastedNotes()">
+                    🗑️ Clear
+                </button>
+            </div>
+        </div>
+
+        <!-- Recent Loops -->
+        <div class="card recent-loops-card">
+            <h3 class="card-title">🎯 Recent Loops</h3>
+            <div id="recentLoopsList">
+                <div class="empty-state">
+                    No recent loops - start creating!
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Form -->
+        <div class="card accent-loop">
+            <div class="form-group">
+                <label class="form-label" for="loopName">Loop Name</label>
+                <input class="form-input" type="text" id="loopName" placeholder="e.g., AI Reflection">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label" for="loopType">Type</label>
+                    <select class="form-select" id="loopType">
+                        <option value="">Select type...</option>
+                        <option value="GPT">GPT</option>
+                        <option value="Claude">Claude</option>
+                        <option value="Gemini">Gemini</option>
+                        <option value="Custom">Custom</option>
+                        <option value="Research">Research</option>
+                        <option value="Creative">Creative</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="moodTag">Mood Tag</label>
+                    <select class="form-select" id="moodTag">
+                        <option value="">Optional...</option>
+                        <option value="Excited">Excited</option>
+                        <option value="Focused">Focused</option>
+                        <option value="Curious">Curious</option>
+                        <option value="Experimental">Experimental</option>
+                        <option value="Productive">Productive</option>
+                        <option value="Reflective">Reflective</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="learnings">What I learned / Next step</label>
+                <textarea class="form-textarea" id="learnings" placeholder="Key insights, next actions, or follow-ups..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="conversationLink">Conversation link (optional)</label>
+                <input class="form-input" type="text" id="conversationLink" placeholder="https://...">
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-primary" id="saveLoop">🎯 Save to Timeline</button>
+                <button class="btn btn-secondary" id="clearForm">Clear</button>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="card stats-card">
+            <h3 class="stats-title">Your Loop Journey</h3>
+            <div class="stat-item">
+                <span class="stat-label">Loops Saved</span>
+                <span class="stat-value" id="totalLoops">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Most Used Type</span>
+                <span class="stat-value" id="mostUsedType">None yet</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">This Week</span>
+                <span class="stat-value" id="thisWeek">0</span>
+            </div>
+        </div>
+
+        <!-- History -->
+        <div class="card">
+            <div class="form-group">
+                <label class="form-label">Loop Timeline</label>
+                <div class="history" id="loopHistory">
+                    <div class="empty-state">
+                        No loops saved yet - start your journey!
+                    </div>
+                </div>
+            </div>
+
+            <div class="export-section">
+                <div class="export-buttons">
+                    <button class="btn-export btn-csv" id="exportCSV">📊 Export Timeline</button>
+                    <button class="btn-export btn-copy" id="copyData">📋 Copy Loops</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize storage
+        let loops = JSON.parse(localStorage.getItem('loopTracker') || '[]');
+        
+        // DOM elements
+        const pastedNotesTextarea = document.getElementById('pastedNotes');
+        const loopNameInput = document.getElementById('loopName');
+        const loopTypeSelect = document.getElementById('loopType');
+        const moodTagSelect = document.getElementById('moodTag');
+        const learningsTextarea = document.getElementById('learnings');
+        const conversationLinkInput = document.getElementById('conversationLink');
+        const saveLoopBtn = document.getElementById('saveLoop');
+        const clearFormBtn = document.getElementById('clearForm');
+        const loopHistoryDiv = document.getElementById('loopHistory');
+        const recentLoopsDiv = document.getElementById('recentLoopsList');
+        const totalLoopsSpan = document.getElementById('totalLoops');
+        const mostUsedTypeSpan = document.getElementById('mostUsedType');
+        const thisWeekSpan = document.getElementById('thisWeek');
+        const exportCSVBtn = document.getElementById('exportCSV');
+        const copyDataBtn = document.getElementById('copyData');
+
+        // Initialize the app
+        function init() {
+            updateDisplay();
+            updateStats();
+            updateRecentLoops();
+        }
+
+        // Paste from clipboard
+        async function pasteFromClipboard() {
+            try {
+                const text = await navigator.clipboard.readText();
+                pastedNotesTextarea.value = text;
+                pastedNotesTextarea.focus();
+                
+                // Visual feedback
+                const btn = document.querySelector('.paste-btn');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '✅ Pasted!';
+                btn.style.background = '#059669';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = '';
+                }, 1500);
+            } catch (err) {
+                alert('Could not access clipboard. Please paste manually.');
+                pastedNotesTextarea.focus();
+            }
+        }
+
+        // Extract information from pasted notes
+        function extractFromNotes() {
+            const notes = pastedNotesTextarea.value.trim();
+            if (!notes) {
+                alert('Please paste some notes first!');
+                return;
+            }
+
+            // Smart extraction logic
+            const lines = notes.split('\n').filter(line => line.trim());
+            
+            // Try to extract loop name from first meaningful line
+            if (!loopNameInput.value && lines.length > 0) {
+                const firstLine = lines[0].replace(/^[•\-\*\#\>\s]+/, '').trim();
+                if (firstLine.length > 5 && firstLine.length < 50) {
+                    loopNameInput.value = firstLine;
+                }
+            }
+
+            // Try to detect AI tool mentions
+            if (!loopTypeSelect.value) {
+                const text = notes.toLowerCase();
+                if (text.includes('chatgpt') || text.includes('gpt')) {
+                    loopTypeSelect.value = 'GPT';
+                } else if (text.includes('claude')) {
+                    loopTypeSelect.value = 'Claude';
+                } else if (text.includes('gemini') || text.includes('bard')) {
+                    loopTypeSelect.value = 'Gemini';
+                }
+            }
+
+            // Extract URLs for conversation links
+            if (!conversationLinkInput.value) {
+                const urlRegex = /(https?:\/\/[^\s]+)/g;
+                const urls = notes.match(urlRegex);
+                if (urls && urls.length > 0) {
+                    conversationLinkInput.value = urls[0];
+                }
+            }
+
+            // Move main content to learnings if not already filled
+            if (!learningsTextarea.value) {
+                // Remove URLs and clean up the text
+                let cleanedNotes = notes.replace(/(https?:\/\/[^\s]+)/g, '').trim();
+                // Remove the first line if we used it for the loop name
+                if (loopNameInput.value && cleanedNotes.startsWith(loopNameInput.value)) {
+                    cleanedNotes = cleanedNotes.substring(loopNameInput.value.length).trim();
+                }
+                learningsTextarea.value = cleanedNotes;
+            }
+
+            // Visual feedback
+            const btn = document.querySelector('.extract-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '✅ Extracted!';
+            btn.style.background = '#1d4ed8';
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.style.background = '';
+            }, 1500);
+
+            // Focus on the first empty required field
+            if (!loopNameInput.value) {
+                loopNameInput.focus();
+            } else if (!loopTypeSelect.value) {
+                loopTypeSelect.focus();
+            } else if (!learningsTextarea.value) {
+                learningsTextarea.focus();
+            }
+        }
+
+        // Clear pasted notes
+        function clearPastedNotes() {
+            pastedNotesTextarea.value = '';
+        }
+
+        // Save loop
+        function saveLoop() {
+            const loopName = loopNameInput.value.trim();
+            const loopType = loopTypeSelect.value;
+            const moodTag = moodTagSelect.value;
+            const learnings = learningsTextarea.value.trim();
+            const conversationLink = conversationLinkInput.value.trim();
+
+            if (!loopName) {
+                alert('What\'s this loop about?');
+                return;
+            }
+
+            if (!loopType) {
+                alert('What type of loop is this?');
+                return;
+            }
+
+            const loop = {
+                name: loopName,
+                type: loopType,
+                moodTag: moodTag,
+                learnings: learnings,
+                conversationLink: conversationLink,
+                timestamp: new Date().toISOString(),
+                date: new Date().toLocaleDateString(),
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            };
+
+            loops.unshift(loop);
+            localStorage.setItem('loopTracker', JSON.stringify(loops));
+            
+            clearForm();
+            updateDisplay();
+            updateStats();
+            updateRecentLoops();
+
+            // Clear pasted notes after successful save
+            pastedNotesTextarea.value = '';
+        }
+
+        // Clear form
+        function clearForm() {
+            loopNameInput.value = '';
+            loopTypeSelect.value = '';
+            moodTagSelect.value = '';
+            learningsTextarea.value = '';
+            conversationLinkInput.value = '';
+        }
+
+        // Update recent loops
+        function updateRecentLoops() {
+            const recentLoops = loops.slice(0, 2);
+            
+            if (recentLoops.length === 0) {
+                recentLoopsDiv.innerHTML = '<div class="empty-state">No recent loops - start creating!</div>';
+                return;
+            }
+
+            recentLoopsDiv.innerHTML = recentLoops.map(loop => `
+                <button class="recent-loop-item" onclick="loadLoop('${loop.name}')">
+                    ${loop.name}
+                </button>
+            `).join('');
+        }
+
+        // Load loop into form (for recent loops functionality)
+        function loadLoop(loopName) {
+            const loop = loops.find(l => l.name === loopName);
+            if (loop) {
+                loopNameInput.value = loop.name + ' (continued)';
+                loopTypeSelect.value = loop.type;
+                moodTagSelect.value = loop.moodTag || '';
+                learningsTextarea.value = '';
+                conversationLinkInput.value = '';
+                loopNameInput.focus();
+            }
+        }
+
+        // Update display
+        function updateDisplay() {
+            if (loops.length === 0) {
+                loopHistoryDiv.innerHTML = '<div class="empty-state">No loops saved yet - start your journey!</div>';
+                return;
+            }
+
+            loopHistoryDiv.innerHTML = loops.map(loop => `
+                <div class="history-item fade-in">
+                    <div class="history-content">
+                        <div class="history-track">${loop.name}</div>
+                        <div class="history-details">
+                            ${loop.type}${loop.moodTag ? `<span class="mood-tag">${loop.moodTag}</span>` : ''}
+                            ${loop.learnings ? `<br><em>"${loop.learnings.slice(0, 60)}${loop.learnings.length > 60 ? '...' : ''}"</em>` : ''}
+                            ${loop.conversationLink ? `<br>🔗 <a href="${loop.conversationLink}" target="_blank">View conversation</a>` : ''}
+                        </div>
+                    </div>
+                    <div class="history-time">${loop.date}<br>${loop.time}</div>
+                </div>
+            `).join('');
+        }
+
+        // Update stats
+        function updateStats() {
+            totalLoopsSpan.textContent = loops.length;
+
+            if (loops.length === 0) {
+                mostUsedTypeSpan.textContent = 'None yet';
+                thisWeekSpan.textContent = '0';
+                return;
+            }
+
+            // Find most used type
+            const typeCount = {};
+            loops.forEach(loop => {
+                typeCount[loop.type] = (typeCount[loop.type] || 0) + 1;
+            });
+
+            const mostUsedType = Object.keys(typeCount).reduce((a, b) => typeCount[a] > typeCount[b] ? a : b);
+            mostUsedTypeSpan.textContent = mostUsedType;
+
+            // Calculate this week's loops
+            const oneWeekAgo = new Date();
+            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+            
+            const thisWeekCount = loops.filter(loop => new Date(loop.timestamp) > oneWeekAgo).length;
+            thisWeekSpan.textContent = thisWeekCount;
+        }
+
+        // Export to CSV
+        function exportToCSV() {
+            if (loops.length === 0) {
+                alert('No loops to export yet!');
+                return;
+            }
+
+            const csvHeaders = ['Loop Name', 'Type', 'Mood Tag', 'Learnings', 'Conversation Link', 'Date', 'Time'];
+            const csvData = loops.map(loop => [
+                loop.name,
+                loop.type,
+                loop.moodTag || '',
+                loop.learnings || '',
+                loop.conversationLink || '',
+                loop.date,
+                loop.time
+            ]);
+
+            const csvContent = [csvHeaders, ...csvData]
+                .map(row => row.map(field => `"${field}"`).join(','))
+                .join('\n');
+
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `loop-timeline-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Copy loops to clipboard
+        function copyToClipboard() {
+            if (loops.length === 0) {
+                alert('No loops to export yet!');
+                return;
+            }
+
+            const textData = loops.map(loop => 
+                `${loop.name} | ${loop.type}${loop.moodTag ? ` (${loop.moodTag})` : ''} | ${loop.date} ${loop.time}${loop.learnings ? `\nLearnings: ${loop.learnings}` : ''}${loop.conversationLink ? `\nLink: ${loop.conversationLink}` : ''}`
+            ).join('\n\n');
+
+            navigator.clipboard.writeText(textData).then(() => {
+                alert('Loop timeline copied to clipboard!');
+            }).catch(() => {
+                alert('Oops, couldn\'t copy that');
+            });
+        }
+
+        // Navigation functions
+        function goBack() {
+            window.history.back();
+        }
+
+        function showHelp() {
+            alert(`Loop Tracker Help:
+
+🌀 Transform Notes to Insights:
+• Paste raw notes from AI sessions
+• Extract key information automatically
+• Structure into organized loops
+
+🎯 Track Your Learning:
+• Record what you learned
+• Note next steps and follow-ups
+• Link back to original conversations
+
+📊 Analyze Patterns:
+• See your most-used AI tools
+• Track weekly learning activity
+• Export data for deeper analysis
+
+💡 Tips:
+• Use descriptive loop names
+• Add mood tags for context
+• Include conversation links for reference
+• Review regularly to spot patterns`);
+        }
+
+        // Event listeners
+        saveLoopBtn.addEventListener('click', saveLoop);
+        clearFormBtn.addEventListener('click', clearForm);
+        exportCSVBtn.addEventListener('click', exportToCSV);
+        copyDataBtn.addEventListener('click', copyToClipboard);
+
+        // Handle Enter key in inputs
+        loopNameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') saveLoop();
+        });
+
+        // Initialize app
+        init();
+
+        // Make functions available globally for onclick handlers
+        window.loadLoop = loadLoop;
+        window.pasteFromClipboard = pasteFromClipboard;
+        window.extractFromNotes = extractFromNotes;
+        window.clearPastedNotes = clearPastedNotes;
+        window.goBack = goBack;
+        window.showHelp = showHelp;
+    </script>
+</body>
+</html>

@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nova WorkflowOS</title>
+  <style>
+    :root {
+      /* Nova-inspired Color Palette */
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #111111;
+      --bg-tertiary: #1a1a1a;
+      --bg-elevated: #222222;
+      --bg-card: #1e1e1e;
+      --bg-input: #2a2a2a;
+      
+      /* Text Colors */
+      --text-primary: #ffffff;
+      --text-secondary: #a3a3a3;
+      --text-tertiary: #666666;
+      --text-muted: #404040;
+      
+      /* Nova Brand Colors */
+      --nova-primary: #007bff;
+      --nova-primary-hover: #0056b3;
+      --nova-secondary: #28a745;
+      --nova-warning: #ffc107;
+      --nova-danger: #dc3545;
+      --nova-info: #17a2b8;
+      
+      /* Accent Colors */
+      --accent-recruiting: #007bff;
+      --accent-live: #28a745;
+      --accent-offers: #ffc107;
+      --accent-reporting: #17a2b8;
+      --accent-atm: #dc3545;
+      
+      /* Borders & Effects */
+      --border-subtle: #333333;
+      --border-medium: #404040;
+      --glass-bg: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --glass-hover: rgba(255, 255, 255, 0.05);
+      
+      /* Shadows */
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+      --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.6);
+      
+      /* Gradients */
+      --gradient-nova: linear-gradient(135deg, #007bff, #0056b3);
+      --gradient-recruiting: linear-gradient(135deg, #007bff, #17a2b8);
+      --gradient-live: linear-gradient(135deg, #28a745, #20c997);
+      --gradient-offers: linear-gradient(135deg, #ffc107, #fd7e14);
+      --gradient-reporting: linear-gradient(135deg, #17a2b8, #6f42c1);
+      --gradient-atm: linear-gradient(135deg, #dc3545, #e83e8c);
+      
+      /* Spacing & Typography */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 0.75rem;
+      --space-lg: 1rem;
+      --space-xl: 1.5rem;
+      --space-2xl: 2rem;
+      --space-3xl: 3rem;
+      
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+      --radius-2xl: 20px;
+      
+      --transition-fast: all 0.15s ease;
+      --transition-medium: all 0.25s ease;
+      --transition-slow: all 0.4s ease;
+      
+      --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Header */
+    .header {
+      background: rgba(10, 10, 10, 0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: var(--space-lg) var(--space-2xl);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-content {
+      max-width: 1600px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--gradient-nova);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: white;
+      font-size: 1.125rem;
+    }
+
+    .logo-text {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .logo-subtitle {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-left: var(--space-sm);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: var(--space-md);
+      align-items: center;
+    }
+
+    .time-display {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-sm) var(--space-lg);
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: var(--space-3xl) var(--space-2xl);
+    }
+
+    /* Dashboard Header */
+    .dashboard-header {
+      text-align: center;
+      margin-bottom: var(--space-3xl);
+      animation: slideInUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(32px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .dashboard-title {
+      font-size: 2.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: var(--space-sm);
+      background: var(--gradient-nova);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .dashboard-subtitle {
+      color: var(--text-secondary);
+      font-size: 1.125rem;
+      margin-bottom: var(--space-xl);
+    }
+
+    /* Quick Stats */
+    .quick-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-lg);
+      margin-bottom: var(--space-3xl);
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      padding: var(--space-xl);
+      text-align: center;
+      transition: var(--transition-medium);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--gradient-nova);
+      opacity: 0.8;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--nova-primary);
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--nova-primary);
+      display: block;
+    }
+
+    .stat-label {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      margin-top: var(--space-xs);
+    }
+
+    /* Nova Links Grid */
+    .nova-section {
+      margin-bottom: var(--space-3xl);
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: var(--space-xl);
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+    }
+
+    .section-icon {
+      width: 2rem;
+      height: 2rem;
+      background: var(--gradient-nova);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.875rem;
+      color: white;
+    }
+
+    .nova-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--space-xl);
+    }
+
+    .nova-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      padding: var(--space-xl);
+      text-decoration: none;
+      color: inherit;
+      transition: var(--transition-medium);
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .nova-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .nova-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .nova-card:hover::before {
+      opacity: 1;
+    }
+
+    /* Card Variants */
+    .nova-card.recruiting::before { background: var(--gradient-recruiting); }
+    .nova-card.recruiting:hover { border-color: var(--accent-recruiting); }
+
+    .nova-card.live::before { background: var(--gradient-live); }
+    .nova-card.live:hover { border-color: var(--accent-live); }
+
+    .nova-card.offers::before { background: var(--gradient-offers); }
+    .nova-card.offers:hover { border-color: var(--accent-offers); }
+
+    .nova-card.reporting::before { background: var(--gradient-reporting); }
+    .nova-card.reporting:hover { border-color: var(--accent-reporting); }
+
+    .nova-card.atm::before { background: var(--gradient-atm); }
+    .nova-card.atm:hover { border-color: var(--accent-atm); }
+
+    /* Work Tools Variants */
+    .nova-card.teams::before { background: linear-gradient(135deg, #464EB8, #5865F2); }
+    .nova-card.teams:hover { border-color: #464EB8; }
+
+    .nova-card.ringcentral::before { background: linear-gradient(135deg, #FF8800, #FF6B00); }
+    .nova-card.ringcentral:hover { border-color: #FF8800; }
+
+    .nova-card.outlook::before { background: linear-gradient(135deg, #0078D4, #106EBE); }
+    .nova-card.outlook:hover { border-color: #0078D4; }
+
+    /* WorkflowOS Tools Variants */
+    .nova-card.prompt-vault::before { background: linear-gradient(135deg, #10b981, #34d399); }
+    .nova-card.prompt-vault:hover { border-color: #10b981; }
+
+    .nova-card.loop-tracker::before { background: linear-gradient(135deg, #8b5cf6, #6366f1); }
+    .nova-card.loop-tracker:hover { border-color: #8b5cf6; }
+
+    .nova-card.canvas::before { background: linear-gradient(135deg, #f59e0b, #fb923c); }
+    .nova-card.canvas:hover { border-color: #f59e0b; }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      margin-bottom: var(--space-md);
+    }
+
+    .card-icon {
+      width: 3rem;
+      height: 3rem;
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: white;
+    }
+
+    .card-icon.recruiting { background: var(--gradient-recruiting); }
+    .card-icon.live { background: var(--gradient-live); }
+    .card-icon.offers { background: var(--gradient-offers); }
+    .card-icon.reporting { background: var(--gradient-reporting); }
+    .card-icon.atm { background: var(--gradient-atm); }
+
+    /* Work Tools Icons */
+    .card-icon.teams { background: linear-gradient(135deg, #464EB8, #5865F2); }
+    .card-icon.ringcentral { background: linear-gradient(135deg, #FF8800, #FF6B00); }
+    .card-icon.outlook { background: linear-gradient(135deg, #0078D4, #106EBE); }
+
+    /* WorkflowOS Tools Icons */
+    .card-icon.prompt-vault { background: linear-gradient(135deg, #10b981, #34d399); }
+    .card-icon.loop-tracker { background: linear-gradient(135deg, #8b5cf6, #6366f1); }
+    .card-icon.canvas { background: linear-gradient(135deg, #f59e0b, #fb923c); }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .card-desc {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      line-height: 1.5;
+      margin-bottom: var(--space-lg);
+    }
+
+    .card-url {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      font-family: monospace;
+      background: var(--bg-tertiary);
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--radius-sm);
+      margin-top: var(--space-md);
+    }
+
+    /* Quick Actions */
+    .quick-actions {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-2xl);
+      padding: var(--space-2xl);
+      margin-bottom: var(--space-3xl);
+    }
+
+    .actions-header {
+      text-align: center;
+      margin-bottom: var(--space-xl);
+    }
+
+    .actions-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: var(--space-sm);
+    }
+
+    .actions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: var(--space-lg);
+    }
+
+    .action-btn {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      text-align: center;
+      text-decoration: none;
+      color: var(--text-secondary);
+      transition: var(--transition-medium);
+      cursor: pointer;
+    }
+
+    .action-btn:hover {
+      background: var(--glass-hover);
+      color: var(--text-primary);
+      border-color: var(--nova-primary);
+      transform: translateY(-2px);
+    }
+
+    .action-icon {
+      font-size: 1.5rem;
+      margin-bottom: var(--space-sm);
+      display: block;
+    }
+
+    .action-label {
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    /* Time & Status */
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg) var(--space-xl);
+      margin-bottom: var(--space-2xl);
+    }
+
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-live);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header {
+        padding: var(--space-md) var(--space-lg);
+      }
+
+      .header-content {
+        flex-direction: column;
+        gap: var(--space-md);
+      }
+
+      .container {
+        padding: var(--space-2xl) var(--space-lg);
+      }
+
+      .dashboard-title {
+        font-size: 2rem;
+      }
+
+      .nova-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .quick-stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .actions-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .status-bar {
+        flex-direction: column;
+        gap: var(--space-md);
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .quick-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .actions-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* External link indicator */
+    .nova-card::after {
+      content: '↗';
+      position: absolute;
+      top: var(--space-lg);
+      right: var(--space-lg);
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .nova-card:hover::after {
+      opacity: 0.6;
+      color: var(--text-tertiary);
+    }
+
+    /* Accessibility */
+    .nova-card:focus {
+      outline: 2px solid var(--nova-primary);
+      outline-offset: 2px;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg-tertiary);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-medium);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--border-subtle);
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <div class="logo">
+        <div class="logo-icon">N</div>
+        <div>
+          <div class="logo-text">Nova WorkflowOS</div>
+          <div class="logo-subtitle">Aya Healthcare Recruiting Hub</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="time-display" id="currentTime">
+          Loading...
+        </div>
+      </div>
+    </div>
+
+    <!-- Work Tools Section -->
+    <div class="nova-section">
+      <h2 class="section-title">
+        <div class="section-icon">💼</div>
+        Essential Work Tools
+      </h2>
+      
+      <div class="nova-grid">
+        <!-- Microsoft Teams -->
+        <a href="https://teams.microsoft.com" 
+           class="nova-card teams" 
+           target="_blank"
+           onclick="trackClick('teams')"
+           title="Open in Edge - Works great with Microsoft integration">
+          <div class="card-header">
+            <div class="card-icon teams">👥</div>
+            <div class="card-title">Microsoft Teams</div>
+          </div>
+          <div class="card-desc">Team collaboration and video meetings • Edge optimized</div>
+          <div class="card-url">teams.microsoft.com</div>
+        </a>
+
+        <!-- RingCentral -->
+        <a href="https://app.ringcentral.com" 
+           class="nova-card ringcentral" 
+           target="_blank"
+           onclick="trackClick('ringcentral')">
+          <div class="card-header">
+            <div class="card-icon ringcentral">📞</div>
+            <div class="card-title">RingCentral</div>
+          </div>
+          <div class="card-desc">Business phone and communication platform</div>
+          <div class="card-url">app.ringcentral.com</div>
+        </a>
+
+        <!-- Outlook Browser -->
+        <a href="https://outlook.office.com/mail/?actSwt=true" 
+           class="nova-card outlook" 
+           target="_blank"
+           onclick="trackClick('outlook')"
+           title="Open in Edge - Perfect Microsoft 365 integration">
+          <div class="card-header">
+            <div class="card-icon outlook">📧</div>
+            <div class="card-title">Outlook Mail</div>
+          </div>
+          <div class="card-desc">Email management and calendar • Microsoft 365 integrated</div>
+          <div class="card-url">outlook.office.com/mail</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- WorkflowOS Tools Section -->
+    <div class="nova-section">
+      <h2 class="section-title">
+        <div class="section-icon">🧠</div>
+        WorkflowOS Tools
+      </h2>
+      
+      <div class="nova-grid">
+        <!-- Prompt Vault -->
+        <a href="#" class="nova-card prompt-vault" onclick="openPromptVault()">
+          <div class="card-header">
+            <div class="card-icon prompt-vault">🧠</div>
+            <div class="card-title">Prompt Vault</div>
+          </div>
+          <div class="card-desc">Build, organize, and share your AI prompt library • Professional recruiting templates</div>
+          <div class="card-url">Click to open Prompt Vault</div>
+        </a>
+
+        <!-- Loop Tracker -->
+        <a href="#" class="nova-card loop-tracker" onclick="openLoopTracker()">
+          <div class="card-header">
+            <div class="card-icon loop-tracker">🌀</div>
+            <div class="card-title">Loop Tracker</div>
+          </div>
+          <div class="card-desc">Transform AI conversations into structured insights • Coming soon</div>
+          <div class="card-url">Click to preview</div>
+        </a>
+
+        <!-- Canvas -->
+        <a href="#" class="nova-card canvas" onclick="openCanvas()">
+          <div class="card-header">
+            <div class="card-icon canvas">🎨</div>
+            <div class="card-title">The Canvas</div>
+          </div>
+          <div class="card-desc">Assemble ideas into cohesive documents • Coming soon</div>
+          <div class="card-url">Click to preview</div>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <div class="container">
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+      <h1 class="dashboard-title">Recruiting Command Center</h1>
+      <p class="dashboard-subtitle">Your Nova workspace for healthcare recruiting excellence</p>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <div class="status-item">
+        <div class="status-dot"></div>
+        <span>Nova System Online</span>
+      </div>
+      <div class="status-item">
+        <span id="todayDate">Today</span>
+      </div>
+      <div class="status-item">
+        <span>Recruiting Dashboard Active</span>
+      </div>
+      <div class="status-item">
+        <button class="action-btn" onclick="openEdgeOptimized()" style="margin: 0; padding: 0.5rem 1rem; font-size: 0.875rem; background: var(--gradient-nova); color: white; border: none;">
+          🌐 Edge Workspace
+        </button>
+      </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="quick-stats">
+      <div class="stat-card">
+        <span class="stat-number" id="dailyClicks">--</span>
+        <div class="stat-label">Nova Sessions Today</div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number">13</span>
+        <div class="stat-label">Quick Access Links</div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number" id="currentHour">--</span>
+        <div class="stat-label">Current Hour</div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number">100%</span>
+        <div class="stat-label">System Uptime</div>
+      </div>
+    </div>
+
+    <!-- Nova Links Section -->
+    <div class="nova-section">
+      <h2 class="section-title">
+        <div class="section-icon">🚀</div>
+        Nova Quick Access
+      </h2>
+      
+      <div class="nova-grid">
+        <!-- Recruiting Dashboard -->
+        <a href="https://nova.ayahealthcare.com/#/recruiting/rec-dashboard" 
+           class="nova-card recruiting" 
+           target="_blank"
+           onclick="trackClick('dashboard')">
+          <div class="card-header">
+            <div class="card-icon recruiting">📊</div>
+            <div class="card-title">Recruiting Dashboard</div>
+          </div>
+          <div class="card-desc">Main recruiting overview and daily metrics</div>
+          <div class="card-url">nova.ayahealthcare.com/#/recruiting/rec-dashboard</div>
+        </a>
+
+        <!-- Live List -->
+        <a href="https://nova.ayahealthcare.com/#/recruiting/live-nurses-new" 
+           class="nova-card live" 
+           target="_blank"
+           onclick="trackClick('live-list')">
+          <div class="card-header">
+            <div class="card-icon live">👩‍⚕️</div>
+            <div class="card-title">Live List</div>
+          </div>
+          <div class="card-desc">Active nurses available for assignments</div>
+          <div class="card-url">nova.ayahealthcare.com/#/recruiting/live-nurses-new</div>
+        </a>
+
+        <!-- Offers -->
+        <a href="https://nova.ayahealthcare.com/#/recruiting/deals" 
+           class="nova-card offers" 
+           target="_blank"
+           onclick="trackClick('offers')">
+          <div class="card-header">
+            <div class="card-icon offers">💼</div>
+            <div class="card-title">Offers</div>
+          </div>
+          <div class="card-desc">Manage deals and recruitment offers</div>
+          <div class="card-url">nova.ayahealthcare.com/#/recruiting/deals</div>
+        </a>
+
+        <!-- FAST ATM -->
+        <a href="https://nova.ayahealthcare.com/#/recruiting/atm" 
+           class="nova-card atm" 
+           target="_blank"
+           onclick="trackClick('fast-atm')">
+          <div class="card-header">
+            <div class="card-icon atm">⚡</div>
+            <div class="card-title">FAST ATM</div>
+          </div>
+          <div class="card-desc">Rapid assignment and placement tools</div>
+          <div class="card-url">nova.ayahealthcare.com/#/recruiting/atm</div>
+        </a>
+
+        <!-- Reporting Interested Clicks -->
+        <a href="https://nova.ayahealthcare.com/#/reporting/reports/4/564/AM%20&%20PM%20Reports" 
+           class="nova-card reporting" 
+           target="_blank"
+           onclick="trackClick('reporting-clicks')">
+          <div class="card-header">
+            <div class="card-icon reporting">📈</div>
+            <div class="card-title">AM & PM Reports</div>
+          </div>
+          <div class="card-desc">Daily reporting and interested clicks analysis</div>
+          <div class="card-url">nova.ayahealthcare.com/#/reporting/reports/4/564/AM & PM Reports</div>
+        </a>
+
+        <!-- Recruitment Reporting Dashboard -->
+        <a href="https://nova.ayahealthcare.com/#/reporting/reports/4/479/Departments" 
+           class="nova-card reporting" 
+           target="_blank"
+           onclick="trackClick('recruitment-reporting')">
+          <div class="card-header">
+            <div class="card-icon reporting">📊</div>
+            <div class="card-title">Recruitment Reporting</div>
+          </div>
+          <div class="card-desc">Department-level recruitment analytics</div>
+          <div class="card-url">nova.ayahealthcare.com/#/reporting/reports/4/479/Departments</div>
+        </a>
+
+        <!-- Fast AM -->
+        <a href="https://nova.ayahealthcare.com/#/accountmanagers/jobs" 
+           class="nova-card recruiting" 
+           target="_blank"
+           onclick="trackClick('fast-am')">
+          <div class="card-header">
+            <div class="card-icon recruiting">🎯</div>
+            <div class="card-title">Fast AM</div>
+          </div>
+          <div class="card-desc">Account manager job assignments</div>
+          <div class="card-url">nova.ayahealthcare.com/#/accountmanagers/jobs</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+      <div class="actions-header">
+        <h3 class="actions-title">Quick Actions</h3>
+        <p style="color: var(--text-secondary); font-size: 0.875rem;">Streamline your daily workflow</p>
+      </div>
+      
+      <div class="actions-grid">
+        <div class="action-btn" onclick="openPromptVault()">
+          <span class="action-icon">🧠</span>
+          <div class="action-label">Prompt Vault</div>
+        </div>
+        
+        <div class="action-btn" onclick="openAllReports()">
+          <span class="action-icon">📊</span>
+          <div class="action-label">Open All Reports</div>
+        </div>
+        
+        <div class="action-btn" onclick="openEdgeOptimized()">
+          <span class="action-icon">🌐</span>
+          <div class="action-label">Edge Workspace</div>
+        </div>
+        
+        <div class="action-btn" onclick="openWorkTools()">
+          <span class="action-icon">💼</span>
+          <div class="action-label">Open Work Tools</div>
+        </div>
+        
+        <div class="action-btn" onclick="openMainWorkflow()">
+          <span class="action-icon">⚡</span>
+          <div class="action-label">Main Workflow</div>
+        </div>
+        
+        <div class="action-btn" onclick="openLiveOffers()">
+          <span class="action-icon">💼</span>
+          <div class="action-label">Live + Offers</div>
+        </div>
+        
+        <div class="action-btn" onclick="refreshStats()">
+          <span class="action-icon">🔄</span>
+          <div class="action-label">Refresh Stats</div>
+        </div>
+        
+        <div class="action-btn" onclick="openNovaHome()">
+          <span class="action-icon">🏠</span>
+          <div class="action-label">Nova Home</div>
+        </div>
+        
+        <div class="action-btn" onclick="copyWorkflowLinks()">
+          <span class="action-icon">📋</span>
+          <div class="action-label">Copy Links</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Initialize app
+    let clickStats = JSON.parse(localStorage.getItem('nova_clicks') || '{}');
+    let dailyClicks = JSON.parse(localStorage.getItem('nova_daily_clicks') || '0');
+    let lastVisitDate = localStorage.getItem('nova_last_visit') || '';
+
+    // Reset daily counter if it's a new day
+    const today = new Date().toDateString();
+    if (lastVisitDate !== today) {
+      dailyClicks = 0;
+      localStorage.setItem('nova_last_visit', today);
+    }
+
+    // Update time display
+    function updateTime() {
+      const now = new Date();
+      const timeString = now.toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: true 
+      });
+      const dateString = now.toLocaleDateString('en-US', {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric'
+      });
+      
+      document.getElementById('currentTime').textContent = timeString;
+      document.getElementById('todayDate').textContent = dateString;
+      document.getElementById('currentHour').textContent = now.getHours();
+    }
+
+    // Update stats display
+    function updateStats() {
+      document.getElementById('dailyClicks').textContent = dailyClicks;
+    }
+
+    // Track clicks
+    function trackClick(section) {
+      dailyClicks++;
+      clickStats[section] = (clickStats[section] || 0) + 1;
+      
+      localStorage.setItem('nova_daily_clicks', JSON.stringify(dailyClicks));
+      localStorage.setItem('nova_clicks', JSON.stringify(clickStats));
+      
+      updateStats();
+      
+      // Visual feedback
+      showToast(`Opening ${section.replace('-', ' ').toUpperCase()}`);
+    }
+
+    // Quick actions
+    function openEdgeOptimized() {
+      console.log('Opening Edge Workspace...');
+      
+      // Add small delays to prevent browser blocking
+      window.open('https://teams.microsoft.com', '_blank');
+      
+      setTimeout(() => {
+        window.open('https://outlook.office.com/mail/?actSwt=true', '_blank');
+      }, 100);
+      
+      setTimeout(() => {
+        window.open('https://nova.ayahealthcare.com/#/recruiting/rec-dashboard', '_blank');
+      }, 200);
+      
+      showToast('🌐 Opening Edge workspace: Teams + Outlook + Nova');
+    }
+
+    function openWorkTools() {
+      window.open('https://teams.microsoft.com', '_blank');
+      window.open('https://app.ringcentral.com', '_blank');
+      window.open('https://outlook.office.com/mail/?actSwt=true', '_blank');
+      
+      showToast('Opening work tools...');
+    }
+
+    function openAllReports() {
+      const reportUrls = [
+        'https://nova.ayahealthcare.com/#/reporting/reports/4/564/AM%20&%20PM%20Reports',
+        'https://nova.ayahealthcare.com/#/reporting/reports/4/479/Departments'
+      ];
+      
+      reportUrls.forEach(url => window.open(url, '_blank'));
+      showToast('Opening all reports...');
+    }
+
+    function openMainWorkflow() {
+      const mainUrls = [
+        'https://nova.ayahealthcare.com/#/recruiting/rec-dashboard',
+        'https://nova.ayahealthcare.com/#/recruiting/live-nurses-new',
+        'https://nova.ayahealthcare.com/#/recruiting/deals'
+      ];
+      
+      mainUrls.forEach(url => window.open(url, '_blank'));
+      showToast('Opening main workflow...');
+    }
+
+    function openLiveOffers() {
+      window.open('https://nova.ayahealthcare.com/#/recruiting/live-nurses-new', '_blank');
+      window.open('https://nova.ayahealthcare.com/#/recruiting/deals', '_blank');
+      showToast('Opening Live List & Offers...');
+    }
+
+    function refreshStats() {
+      updateStats();
+      updateTime();
+      showToast('Stats refreshed!');
+      
+      // Add a subtle animation to stat cards
+      document.querySelectorAll('.stat-card').forEach(card => {
+        card.style.transform = 'scale(1.02)';
+        setTimeout(() => {
+          card.style.transform = 'scale(1)';
+        }, 200);
+      });
+    }
+
+    function openNovaHome() {
+      window.open('https://nova.ayahealthcare.com/#/recruiting/rec-dashboard', '_blank');
+      showToast('Opening Nova home...');
+    }
+
+    function copyWorkflowLinks() {
+      const links = [
+        'Nova Dashboard: https://nova.ayahealthcare.com/#/recruiting/rec-dashboard',
+        'Live List: https://nova.ayahealthcare.com/#/recruiting/live-nurses-new',
+        'Offers: https://nova.ayahealthcare.com/#/recruiting/deals',
+        'FAST ATM: https://nova.ayahealthcare.com/#/recruiting/atm',
+        'AM & PM Reports: https://nova.ayahealthcare.com/#/reporting/reports/4/564/AM%20&%20PM%20Reports',
+        'Recruitment Reporting: https://nova.ayahealthcare.com/#/reporting/reports/4/479/Departments',
+        'Fast AM: https://nova.ayahealthcare.com/#/accountmanagers/jobs',
+        '',
+        'Work Tools:',
+        'Teams: https://teams.microsoft.com',
+        'RingCentral: https://app.ringcentral.com',
+        'Outlook: https://outlook.office.com/mail/?actSwt=true'
+      ].join('\n');
+      
+      navigator.clipboard.writeText(links).then(() => {
+        showToast('✅ All Nova links copied to clipboard!');
+    }
+
+    // App fallback handling
+    function fallbackToWeb(webUrl, event) {
+      // Small delay to allow app protocol to attempt opening
+      setTimeout(() => {
+        // If we're still on the page, the app didn't open, so open web version
+        if (document.hasFocus()) {
+          window.open(webUrl, '_blank');
+        }
+      }, 1000);
+      
+      // Prevent the default href from being followed immediately
+      event.preventDefault();
+    }
+      }).catch(() => {
+        showToast('❌ Could not copy links');
+      });
+    }
+
+    // Toast notifications
+    function showToast(message) {
+      const toast = document.createElement('div');
+      toast.style.cssText = `
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        background: var(--nova-primary);
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        z-index: 1000;
+        animation: slideInRight 0.3s ease;
+        box-shadow: var(--shadow-lg);
+        font-weight: 500;
+      `;
+      toast.textContent = message;
+      
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.animation = 'slideOutRight 0.3s ease forwards';
+        setTimeout(() => {
+          if (document.body.contains(toast)) {
+            document.body.removeChild(toast);
+          }
+        }, 300);
+      }, 2500);
+    }
+
+    // Add toast animations
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes slideInRight {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+      @keyframes slideOutRight {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', function() {
+      updateTime();
+      updateStats();
+      
+      // Update time every minute
+      setInterval(updateTime, 60000);
+    });
+
+    // Make functions global
+    window.trackClick = trackClick;
+    window.openEdgeOptimized = openEdgeOptimized;
+    window.openWorkTools = openWorkTools;
+    window.openAllReports = openAllReports;
+    window.openMainWorkflow = openMainWorkflow;
+    window.openLiveOffers = openLiveOffers;
+    window.refreshStats = refreshStats;
+    window.openNovaHome = openNovaHome;
+    window.copyWorkflowLinks = copyWorkflowLinks;
+  </script>
+</body>
+</html>
