@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Emergency Room | Nova OS</title>
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-card: #1e1e1e;
+            --bg-elevated: #222222;
+            --text-primary: #ffffff;
+            --text-secondary: #a3a3a3;
+            --text-muted: #666666;
+            --nova-primary: #10b981;
+            --nova-secondary: #34d399;
+            --critical: #ef4444;
+            --urgent: #f59e0b;
+            --standard: #3b82f6;
+            --fyi: #6b7280;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --transition: all 0.2s ease;
+            --shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+            --gradient-nova: linear-gradient(135deg, #10b981, #34d399);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 2rem;
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--nova-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--glass-border);
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .step {
+            text-align: center;
+            padding: 1rem;
+            background: var(--glass-bg);
+            border-radius: 8px;
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            background: var(--nova-primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin: 0 auto 0.5rem;
+        }
+
+        .step-text {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        /* Main Workflow */
+        .workflow-section {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--glass-border);
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--nova-primary);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .helper-text {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        /* Input Area */
+        .email-input {
+            width: 100%;
+            background: var(--bg-elevated);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 1rem;
+            color: var(--text-primary);
+            font-family: monospace;
+            font-size: 0.875rem;
+            min-height: 200px;
+            resize: vertical;
+            margin-bottom: 1rem;
+            transition: var(--transition);
+        }
+
+        .email-input:focus {
+            outline: none;
+            border-color: var(--nova-primary);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .email-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        /* Action Buttons */
+        .action-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--nova-primary);
+        }
+
+        .btn.primary {
+            background: var(--gradient-nova);
+            border-color: var(--nova-primary);
+            color: white;
+            font-weight: 600;
+        }
+
+        .btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn.success {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: var(--nova-primary);
+            color: var(--nova-primary);
+        }
+
+        /* Results Area */
+        .results-input {
+            width: 100%;
+            background: var(--bg-elevated);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 1rem;
+            color: var(--text-primary);
+            font-family: monospace;
+            font-size: 0.875rem;
+            min-height: 150px;
+            resize: vertical;
+            margin-bottom: 1rem;
+            transition: var(--transition);
+        }
+
+        .results-input:focus {
+            outline: none;
+            border-color: var(--nova-primary);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        /* Triage Display */
+        .triage-display {
+            display: none;
+            margin-top: 2rem;
+        }
+
+        .triage-display.show {
+            display: block;
+        }
+
+        .triage-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .priority-card {
+            background: var(--bg-elevated);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border-left: 4px solid var(--glass-border);
+        }
+
+        .priority-card.p1 { border-left-color: var(--critical); }
+        .priority-card.p2 { border-left-color: var(--urgent); }
+        .priority-card.p3 { border-left-color: var(--standard); }
+        .priority-card.p4 { border-left-color: var(--fyi); }
+
+        .priority-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .priority-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .priority-badge.p1 { background: rgba(239, 68, 68, 0.2); color: var(--critical); }
+        .priority-badge.p2 { background: rgba(245, 158, 11, 0.2); color: var(--urgent); }
+        .priority-badge.p3 { background: rgba(59, 130, 246, 0.2); color: var(--standard); }
+        .priority-badge.p4 { background: rgba(107, 114, 128, 0.2); color: var(--fyi); }
+
+        .priority-count {
+            background: var(--glass-bg);
+            color: var(--text-secondary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-left: auto;
+        }
+
+        .email-item {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .email-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--nova-primary);
+        }
+
+        .email-subject {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .email-from {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .email-reason {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            font-style: italic;
+        }
+
+        .email-action {
+            font-size: 0.75rem;
+            color: var(--nova-primary);
+            font-weight: 500;
+            background: rgba(16, 185, 129, 0.1);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--nova-primary);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateX(100px);
+            transition: var(--transition);
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            border-color: var(--nova-primary);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .notification.error {
+            border-color: var(--critical);
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--critical);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2rem;
+            }
+
+            .steps {
+                grid-template-columns: 1fr;
+            }
+
+            .action-row {
+                grid-template-columns: 1fr;
+            }
+
+            .triage-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1 class="title">🏥 Email Emergency Room</h1>
+            <p class="subtitle">
+                Triage your inbox like a trauma center. Copy, paste, done.
+            </p>
+        </div>
+
+        <!-- How It Works -->
+        <div class="how-it-works">
+            <h2 style="color: var(--nova-primary); margin-bottom: 1rem;">How It Works</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-text">Paste your emails below</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-text">Copy AI prompt to clipboard</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-text">Paste in Claude.ai or ChatGPT</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-text">Copy AI response back here</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 1: Email Input -->
+        <div class="workflow-section">
+            <div class="section-title">
+                <span>📝</span>
+                <span>Step 1: Paste Your Emails</span>
+            </div>
+            
+            <div class="helper-text">
+                Copy emails from your inbox and paste them here. Include subject, sender, and a snippet of the message.
+            </div>
+
+            <textarea class="email-input" id="emailInput" placeholder="Example:
+
+1. Subject: URGENT – Client contract needs signature today
+   From: legal@bigclient.com
+   Body: Hi, just a reminder we need the signed MSA by 5PM EST today...
+
+2. Subject: Weekly team sync agenda  
+   From: ops@yourteam.com
+   Body: Here's the agenda for tomorrow's sync. Let me know if you want to add anything...
+
+3. Subject: Candidate feedback needed
+   From: tiffany@yourteam.com  
+   Body: Can you review the notes from yesterday's interview..."></textarea>
+
+            <div class="action-row">
+                <button class="btn primary" onclick="generatePrompt()">
+                    <span>📋</span>
+                    <span>Generate AI Prompt</span>
+                </button>
+                <button class="btn" onclick="loadSampleEmails()">
+                    <span>📝</span>
+                    <span>Load Sample Emails</span>
+                </button>
+                <button class="btn" onclick="clearEmails()">
+                    <span>🗑️</span>
+                    <span>Clear</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 2: AI Response -->
+        <div class="workflow-section">
+            <div class="section-title">
+                <span>🧠</span>
+                <span>Step 2: Paste AI Response</span>
+            </div>
+            
+            <div class="helper-text">
+                After getting the JSON response from Claude or ChatGPT, paste it here to see your organized triage.
+            </div>
+
+            <textarea class="results-input" id="aiResponse" placeholder="Paste Claude/GPT JSON response here...
+
+Example:
+{
+  &quot;triage&quot;: {
+    &quot;p1&quot;: [
+      {
+        &quot;subject&quot;: &quot;URGENT – Client contract needs signature today&quot;,
+        &quot;from&quot;: &quot;legal@bigclient.com&quot;,
+        &quot;reason&quot;: &quot;Legal deadline with revenue impact&quot;,
+        &quot;action&quot;: &quot;Sign immediately - revenue blocker&quot;
+      }
+    ],
+    &quot;p2&quot;: [...],
+    &quot;p3&quot;: [...],
+    &quot;p4&quot;: [...]
+  }
+}"></textarea>
+
+            <div class="action-row">
+                <button class="btn success" onclick="processResults()">
+                    <span>⚡</span>
+                    <span>Process Results</span>
+                </button>
+                <button class="btn" onclick="loadSampleResults()">
+                    <span>🎯</span>
+                    <span>Load Sample Results</span>
+                </button>
+                <button class="btn" onclick="exportResults()">
+                    <span>📤</span>
+                    <span>Export Results</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Triage Results Display -->
+        <div class="triage-display" id="triageDisplay">
+            <h2 style="color: var(--nova-primary); margin-bottom: 1.5rem;">🎯 Your Organized Inbox</h2>
+            
+            <div class="triage-grid">
+                <!-- P1 Critical -->
+                <div class="priority-card p1">
+                    <div class="priority-header">
+                        <span class="priority-badge p1">🚨 P1 CRITICAL</span>
+                        <span class="priority-count" id="p1Count">0</span>
+                    </div>
+                    <div id="p1Emails"></div>
+                </div>
+
+                <!-- P2 Urgent -->
+                <div class="priority-card p2">
+                    <div class="priority-header">
+                        <span class="priority-badge p2">⚠️ P2 URGENT</span>
+                        <span class="priority-count" id="p2Count">0</span>
+                    </div>
+                    <div id="p2Emails"></div>
+                </div>
+
+                <!-- P3 Standard -->
+                <div class="priority-card p3">
+                    <div class="priority-header">
+                        <span class="priority-badge p3">📋 P3 STANDARD</span>
+                        <span class="priority-count" id="p3Count">0</span>
+                    </div>
+                    <div id="p3Emails"></div>
+                </div>
+
+                <!-- P4 FYI -->
+                <div class="priority-card p4">
+                    <div class="priority-header">
+                        <span class="priority-badge p4">📚 P4 FYI</span>
+                        <span class="priority-count" id="p4Count">0</span>
+                    </div>
+                    <div id="p4Emails"></div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="action-row">
+                <button class="btn primary" onclick="generateHandoff()">
+                    <span>📋</span>
+                    <span>Generate Handoff Summary</span>
+                </button>
+                <button class="btn" onclick="copyAllActions()">
+                    <span>📝</span>
+                    <span>Copy All Actions</span>
+                </button>
+                <button class="btn" onclick="startOver()">
+                    <span>🔄</span>
+                    <span>New Triage</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <span id="notificationText">Copied to clipboard!</span>
+    </div>
+
+    <script>
+        // Sample data for demonstrations
+        const sampleEmails = `1. Subject: URGENT – Client contract needs signature today
+   From: legal@bigclient.com
+   Body: Hi, just a reminder we need the signed MSA by 5PM EST today to keep onboarding on schedule.
+
+2. Subject: Weekly team sync agenda
+   From: ops@yourteam.com
+   Body: Here's the agenda for tomorrow's sync. Let me know if you want to add anything.
+
+3. Subject: FYI – Stripe maintenance notice
+   From: updates@stripe.com
+   Body: We'll be doing scheduled maintenance next Sunday at 1AM PST.
+
+4. Subject: Candidate feedback needed
+   From: tiffany@yourteam.com
+   Body: Can you review the notes from yesterday's interview and send a thumbs up/down by EOD?
+
+5. Subject: New lead from website
+   From: sales@yourcompany.com
+   Body: Fortune 500 company just submitted an inquiry for 50+ hires. Hot lead.
+
+6. Subject: Invoice approval needed
+   From: finance@vendor.com
+   Body: Monthly software invoice needs approval before end of month.`;
+
+        const sampleResults = {
+            "triage": {
+                "p1": [
+                    {
+                        "subject": "URGENT – Client contract needs signature today",
+                        "from": "legal@bigclient.com",
+                        "reason": "Legal deadline with revenue impact",
+                        "action": "Sign immediately - revenue blocker"
+                    },
+                    {
+                        "subject": "New lead from website", 
+                        "from": "sales@yourcompany.com",
+                        "reason": "Fortune 500 opportunity - time sensitive",
+                        "action": "Call immediately - hot lead"
+                    }
+                ],
+                "p2": [
+                    {
+                        "subject": "Candidate feedback needed",
+                        "from": "tiffany@yourteam.com", 
+                        "reason": "Assistant waiting on founder decision",
+                        "action": "Review and respond by EOD"
+                    }
+                ],
+                "p3": [
+                    {
+                        "subject": "Weekly team sync agenda",
+                        "from": "ops@yourteam.com",
+                        "reason": "Team coordination - not urgent",
+                        "action": "Review during admin time"
+                    },
+                    {
+                        "subject": "Invoice approval needed",
+                        "from": "finance@vendor.com", 
+                        "reason": "Regular business expense",
+                        "action": "Delegate to finance team"
+                    }
+                ],
+                "p4": [
+                    {
+                        "subject": "FYI – Stripe maintenance notice",
+                        "from": "updates@stripe.com",
+                        "reason": "Informational only",
+                        "action": "Note for weekend - no action needed"
+                    }
+                ]
+            }
+        };
+
+        let currentResults = null;
+
+        // Core Functions
+        function generatePrompt() {
+            const emails = document.getElementById('emailInput').value.trim();
+            
+            if (!emails) {
+                showNotification('Please paste some emails first!', 'error');
+                return;
+            }
+
+            const prompt = `You are an AI assistant helping triage a founder's inbox like a trauma center.
+
+Below is a list of raw emails, transcribed manually from a screenshot. For each email, output:
+
+- Priority level: P1 (Critical), P2 (Urgent), P3 (Standard), or P4 (FYI)
+- Reason for priority
+- Suggested action (e.g., "Handle now", "Delegate to assistant", "Schedule follow-up", etc.)
+- (Optional) Short draft reply (if needed)
+
+Context: Founder runs a recruiting/staffing business. Time and focus are limited. Prioritize what's revenue-impacting, legally urgent, or bottlenecking team workflows.
+
+Format your output as JSON like this:
+{
+  "triage": {
+    "p1": [{"subject": "...", "from": "...", "reason": "...", "action": "..."}],
+    "p2": [...],
+    "p3": [...], 
+    "p4": [...]
+  }
+}
+
+---
+
+EMAILS:
+
+${emails}`;
+
+            copyToClipboard(prompt);
+            showNotification('AI prompt copied! Paste in Claude.ai or ChatGPT');
+        }
+
+        function processResults() {
+            const response = document.getElementById('aiResponse').value.trim();
+            
+            if (!response) {
+                showNotification('Please paste AI response first!', 'error');
+                return;
+            }
+
+            try {
+                currentResults = JSON.parse(response);
+                displayTriage(currentResults);
+                showNotification('Results processed successfully!');
+            } catch (error) {
+                showNotification('Invalid JSON format. Please check the AI response.', 'error');
+            }
+        }
+
+        function displayTriage(data) {
+            if (!data.triage) {
+                showNotification('Invalid data format', 'error');
+                return;
+            }
+
+            // Clear existing results
+            ['p1', 'p2', 'p3', 'p4'].forEach(priority => {
+                document.getElementById(priority + 'Emails').innerHTML = '';
+                document.getElementById(priority + 'Count').textContent = '0';
+            });
+
+            // Populate results
+            Object.entries(data.triage).forEach(([priority, emails]) => {
+                if (emails && emails.length > 0) {
+                    populateEmailList(priority, emails);
+                    document.getElementById(priority + 'Count').textContent = emails.length;
+                }
+            });
+
+            document.getElementById('triageDisplay').classList.add('show');
+        }
+
+        function populateEmailList(priority, emails) {
+            const container = document.getElementById(priority + 'Emails');
+            container.innerHTML = emails.map(email => `
+                <div class="email-item" onclick="copyEmailAction('${email.action.replace(/'/g, "\\'")}')">
+                    <div class="email-subject">${email.subject}</div>
+                    <div class="email-from">From: ${email.from}</div>
+                    <div class="email-reason">Reason: ${email.reason}</div>
+                    <div class="email-action">${email.action}</div>
+                </div>
+            `).join('');
+        }
+
+        function copyEmailAction(action) {
+            copyToClipboard(action);
+            showNotification('Action copied to clipboard!');
+        }
+
+        // Helper Functions
+        function loadSampleEmails() {
+            document.getElementById('emailInput').value = sampleEmails;
+            showNotification('Sample emails loaded!');
+        }
+
+        function loadSampleResults() {
+            document.getElementById('aiResponse').value = JSON.stringify(sampleResults, null, 2);
+            processResults();
+        }
+
+        function clearEmails() {
+            document.getElementById('emailInput').value = '';
+            showNotification('Emails cleared');
+        }
+
+        function generateHandoff() {
+            if (!currentResults) {
+                showNotification('Process results first!', 'error');
+                return;
+            }
+
+            const handoff = generateHandoffSummary(currentResults);
+            copyToClipboard(handoff);
+            showNotification('Handoff summary copied!');
+        }
+
+        function generateHandoffSummary(data) {
+            let summary = '📋 EMAIL HANDOFF SUMMARY\n\n';
+            
+            const priorities = {
+                'p1': '🚨 P1 CRITICAL - HANDLE IMMEDIATELY:',
+                'p2': '⚠️ P2 URGENT - TODAY:',
+                'p3': '📋 P3 STANDARD - THIS WEEK:',
+                'p4': '📚 P4 FYI - WHEN CONVENIENT:'
+            };
+
+            Object.entries(priorities).forEach(([priority, title]) => {
+                const emails = data.triage[priority] || [];
+                if (emails.length > 0) {
+                    summary += `${title}\n`;
+                    emails.forEach(email => {
+                        summary += `• ${email.subject} → ${email.action}\n`;
+                    });
+                    summary += '\n';
+                }
+            });
+
+            summary += 'Generated by Email Emergency Room | Nova OS';
+            return summary;
+        }
+
+        function copyAllActions() {
+            if (!currentResults) {
+                showNotification('Process results first!', 'error');
+                return;
+            }
+
+            let actions = 'QUICK ACTION LIST:\n\n';
+            Object.entries(currentResults.triage).forEach(([priority, emails]) => {
+                emails.forEach((email, index) => {
+                    actions += `${index + 1}. ${email.action}\n`;
+                });
+            });
+
+            copyToClipboard(actions);
+            showNotification('All actions copied!');
+        }
+
+        function exportResults() {
+            if (!currentResults) {
+                showNotification('Process results first!', 'error');
+                return;
+            }
+
+            const exportData = {
+                timestamp: new Date().toISOString(),
+                totalEmails: Object.values(currentResults.triage).flat().length,
+                ...currentResults
+            };
+
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `email-triage-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showNotification('Results exported!');
+        }
+
+        function startOver() {
+            document.getElementById('emailInput').value = '';
+            document.getElementById('aiResponse').value = '';
+            document.getElementById('triageDisplay').classList.remove('show');
+            currentResults = null;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            showNotification('Ready for new triage!');
+        }
+
+        // Utility Functions
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                // Success handled by caller
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+            });
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const text = document.getElementById('notificationText');
+            
+            text.textContent = message;
+            notification.className = `notification show ${type}`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
