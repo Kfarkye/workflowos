@@ -1,0 +1,1640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkflowOS Link Manager v2.0</title>
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-card: #1e1e1e;
+            --bg-input: #2a2a2a;
+            --bg-elevated: #242424;
+            --text-primary: #ffffff;
+            --text-secondary: #a3a3a3;
+            --text-muted: #666666;
+            --accent-primary: #3b82f6;
+            --accent-secondary: #8b5cf6;
+            --accent-success: #10b981;
+            --accent-warning: #f59e0b;
+            --accent-danger: #ef4444;
+            --border-subtle: #333333;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+            --gradient-primary: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            --gradient-card: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(139, 92, 246, 0.05));
+            --space-xs: 0.25rem;
+            --space-sm: 0.5rem;
+            --space-md: 0.75rem;
+            --space-lg: 1rem;
+            --space-xl: 1.5rem;
+            --space-2xl: 2rem;
+            --space-3xl: 3rem;
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --transition-fast: all 0.15s ease;
+            --transition-medium: all 0.25s ease;
+            --transition-slow: all 0.4s ease;
+            --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-family);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Enhanced Header with Quick Actions */
+        .header {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: var(--space-lg) var(--space-2xl);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(20px);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: var(--space-lg);
+        }
+
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .quick-stats-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .stat-badge {
+            background: var(--glass-bg);
+            border: 1px solid var(--border-subtle);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-md);
+            font-weight: 500;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        .quick-add-btn {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: var(--space-sm) var(--space-lg);
+            border-radius: var(--radius-lg);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .quick-add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .view-toggle {
+            display: flex;
+            background: var(--bg-input);
+            border-radius: var(--radius-lg);
+            padding: 2px;
+        }
+
+        .view-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .view-btn.active {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        /* Enhanced Search with AI Suggestions */
+        .search-section {
+            background: var(--gradient-card);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            padding: var(--space-xl);
+            margin-bottom: var(--space-xl);
+            backdrop-filter: blur(10px);
+        }
+
+        .search-container {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-input {
+            width: 100%;
+            background: var(--bg-elevated);
+            border: 2px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg) var(--space-xl);
+            padding-left: 3rem;
+            color: var(--text-primary);
+            font-size: 1.125rem;
+            transition: var(--transition-medium);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: var(--space-lg);
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            z-index: 1;
+        }
+
+        .search-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            margin-top: var(--space-sm);
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 10;
+            display: none;
+        }
+
+        .search-suggestion {
+            padding: var(--space-md) var(--space-lg);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .search-suggestion:hover {
+            background: var(--glass-bg);
+        }
+
+        .search-suggestion:last-child {
+            border-bottom: none;
+        }
+
+        /* Enhanced Filters */
+        .filters-section {
+            display: flex;
+            align-items: center;
+            gap: var(--space-lg);
+            margin-bottom: var(--space-xl);
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .filter-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .filter-chips {
+            display: flex;
+            gap: var(--space-sm);
+            flex-wrap: wrap;
+        }
+
+        .filter-chip {
+            background: var(--glass-bg);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-lg);
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+        }
+
+        .filter-chip:hover {
+            background: var(--accent-primary);
+            color: white;
+            border-color: var(--accent-primary);
+        }
+
+        .filter-chip.active {
+            background: var(--accent-primary);
+            color: white;
+            border-color: var(--accent-primary);
+        }
+
+        /* Enhanced Link Cards */
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: var(--space-lg);
+            margin-bottom: var(--space-2xl);
+        }
+
+        .link-card {
+            background: var(--gradient-card);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            padding: var(--space-xl);
+            transition: var(--transition-medium);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .link-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transition: var(--transition-medium);
+            transform-origin: left;
+        }
+
+        .link-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            border-color: var(--accent-primary);
+        }
+
+        .link-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .link-header {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-md);
+            margin-bottom: var(--space-lg);
+        }
+
+        .link-favicon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-lg);
+            background: var(--bg-elevated);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .link-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .link-name {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: var(--space-xs);
+            word-break: break-word;
+        }
+
+        .link-url {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            word-break: break-all;
+            margin-bottom: var(--space-sm);
+        }
+
+        .link-metadata {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            margin-bottom: var(--space-lg);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .metadata-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+        }
+
+        .link-tags {
+            display: flex;
+            gap: var(--space-xs);
+            margin-bottom: var(--space-lg);
+            flex-wrap: wrap;
+        }
+
+        .link-tag {
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-md);
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .tag-design { background: rgba(147, 51, 234, 0.2); color: #a855f7; }
+        .tag-docs { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+        .tag-dev { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .tag-recruiting { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+        .tag-communication { background: rgba(236, 72, 153, 0.2); color: #ec4899; }
+        .tag-general { background: rgba(107, 114, 128, 0.2); color: #9ca3af; }
+
+        .link-actions {
+            display: flex;
+            gap: var(--space-sm);
+            opacity: 0;
+            transition: var(--transition-medium);
+        }
+
+        .link-card:hover .link-actions {
+            opacity: 1;
+        }
+
+        .action-btn {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: var(--space-sm);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+        }
+
+        .action-btn:hover {
+            background: var(--accent-primary);
+            color: white;
+            border-color: var(--accent-primary);
+        }
+
+        /* Smart Insights Panel */
+        .insights-panel {
+            background: var(--gradient-card);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            padding: var(--space-xl);
+            margin-bottom: var(--space-xl);
+            backdrop-filter: blur(10px);
+        }
+
+        .insights-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--space-lg);
+        }
+
+        .insights-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-lg);
+        }
+
+        .insight-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            text-align: center;
+        }
+
+        .insight-icon {
+            font-size: 2rem;
+            margin-bottom: var(--space-sm);
+        }
+
+        .insight-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin-bottom: var(--space-xs);
+        }
+
+        .insight-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        /* Floating Action Menu */
+        .floating-menu {
+            position: fixed;
+            bottom: var(--space-2xl);
+            right: var(--space-2xl);
+            z-index: 100;
+        }
+
+        .fab-main {
+            width: 64px;
+            height: 64px;
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition-medium);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fab-main:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+
+        .fab-menu {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: var(--transition-medium);
+            pointer-events: none;
+        }
+
+        .fab-menu.show {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+
+        .fab-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: var(--space-md) var(--space-lg);
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: var(--transition-fast);
+            white-space: nowrap;
+        }
+
+        .fab-item:hover {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            transform: translateX(-4px);
+        }
+
+        /* Enhanced Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: var(--transition-medium);
+        }
+
+        .modal.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-xl);
+            padding: var(--space-2xl);
+            max-width: 600px;
+            width: 90%;
+            transform: scale(0.95);
+            transition: var(--transition-medium);
+        }
+
+        .modal.show .modal-content {
+            transform: scale(1);
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            top: var(--space-2xl);
+            right: var(--space-2xl);
+            z-index: 1100;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+        }
+
+        .toast {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg) var(--space-xl);
+            box-shadow: var(--shadow-md);
+            transform: translateX(400px);
+            transition: var(--transition-medium);
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            max-width: 400px;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.success {
+            border-left: 4px solid var(--accent-success);
+        }
+
+        .toast.error {
+            border-left: 4px solid var(--accent-danger);
+        }
+
+        .toast.warning {
+            border-left: 4px solid var(--accent-warning);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: var(--space-lg);
+                align-items: stretch;
+            }
+
+            .links-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filters-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .floating-menu {
+                bottom: var(--space-lg);
+                right: var(--space-lg);
+            }
+
+            .insights-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Welcome State Enhancement */
+        .welcome-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: var(--space-3xl);
+            text-align: center;
+        }
+
+        .welcome-hero {
+            margin-bottom: var(--space-3xl);
+        }
+
+        .welcome-icon {
+            font-size: 5rem;
+            margin-bottom: var(--space-xl);
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .welcome-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: var(--space-lg);
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .welcome-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-2xl);
+        }
+
+        .welcome-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-lg);
+            margin-bottom: var(--space-2xl);
+        }
+
+        .welcome-action {
+            background: var(--gradient-card);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            padding: var(--space-2xl);
+            cursor: pointer;
+            transition: var(--transition-medium);
+            backdrop-filter: blur(10px);
+        }
+
+        .welcome-action:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--accent-primary);
+        }
+
+        .action-icon {
+            font-size: 3rem;
+            margin-bottom: var(--space-lg);
+        }
+
+        .action-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: var(--space-sm);
+        }
+
+        .action-description {
+            color: var(--text-secondary);
+        }
+
+        /* Smooth animations */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: slideIn 0.5s ease-out;
+        }
+
+        /* Loading states */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid var(--accent-primary);
+            border-radius: 50%;
+            border-top: 2px solid transparent;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Enhanced Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <div class="header-title">🔗 WorkflowOS Link Manager v2.0</div>
+                <div class="quick-stats-header" id="headerStats">
+                    <div class="stat-badge">
+                        <span id="linkCountHeader">0</span> Links
+                    </div>
+                    <div class="stat-badge">
+                        <span id="collectionsCountHeader">1</span> Collections
+                    </div>
+                    <div class="stat-badge">
+                        This Week: <span id="weeklyActivityHeader">0</span>
+                    </div>
+                </div>
+            </div>
+            <div class="header-actions">
+                <div class="view-toggle">
+                    <button class="view-btn active" onclick="switchView('grid')" id="gridViewBtn">
+                        <span>🔲</span> Grid
+                    </button>
+                    <button class="view-btn" onclick="switchView('list')" id="listViewBtn">
+                        <span>📋</span> List
+                    </button>
+                </div>
+                <button class="quick-add-btn" onclick="openAddModal()">
+                    <span>➕</span> Quick Add
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container" id="mainContainer">
+        <!-- Welcome State -->
+        <div class="welcome-container" id="welcomeState">
+            <div class="welcome-hero">
+                <div class="welcome-icon">🚀</div>
+                <h1 class="welcome-title">Welcome to Link Manager v2.0</h1>
+                <p class="welcome-subtitle">
+                    Your intelligent workspace for organizing, discovering, and managing all your important links
+                </p>
+            </div>
+
+            <div class="welcome-actions">
+                <div class="welcome-action" onclick="showQuickStart()">
+                    <div class="action-icon">⚡</div>
+                    <div class="action-title">Quick Start</div>
+                    <div class="action-description">Add your first link and start organizing</div>
+                </div>
+                
+                <div class="welcome-action" onclick="importFromFile()">
+                    <div class="action-icon">📥</div>
+                    <div class="action-title">Import Collection</div>
+                    <div class="action-description">Upload existing bookmarks or links</div>
+                </div>
+                
+                <div class="welcome-action" onclick="browseTemplates()">
+                    <div class="action-icon">📋</div>
+                    <div class="action-title">Use Template</div>
+                    <div class="action-description">Start with pre-built collections</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main App -->
+        <div class="main-app" id="mainApp" style="display: none;">
+            <!-- Smart Insights Panel -->
+            <div class="insights-panel" id="insightsPanel" style="display: none;">
+                <div class="insights-header">
+                    <div class="insights-title">
+                        <span>📊</span> Smart Insights
+                    </div>
+                    <button onclick="toggleInsights()" class="action-btn">✨</button>
+                </div>
+                <div class="insights-grid">
+                    <div class="insight-card">
+                        <div class="insight-icon">🔥</div>
+                        <div class="insight-value" id="mostUsedCount">0</div>
+                        <div class="insight-label">Most Used</div>
+                    </div>
+                    <div class="insight-card">
+                        <div class="insight-icon">📈</div>
+                        <div class="insight-value" id="weeklyGrowth">+0</div>
+                        <div class="insight-label">This Week</div>
+                    </div>
+                    <div class="insight-card">
+                        <div class="insight-icon">🏷️</div>
+                        <div class="insight-value" id="topCategory">-</div>
+                        <div class="insight-label">Top Category</div>
+                    </div>
+                    <div class="insight-card">
+                        <div class="insight-icon">⭐</div>
+                        <div class="insight-value" id="productivityScore">0%</div>
+                        <div class="insight-label">Productivity</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enhanced Search -->
+            <div class="search-section">
+                <div class="search-container">
+                    <div class="search-input-wrapper">
+                        <div class="search-icon">🔍</div>
+                        <input 
+                            type="text" 
+                            class="search-input" 
+                            placeholder="Search your links, or try 'design tools' or 'recent docs'..."
+                            id="mainSearch"
+                            oninput="handleSearch()"
+                            onfocus="showSearchSuggestions()"
+                        >
+                    </div>
+                    <div class="search-suggestions" id="searchSuggestions">
+                        <!-- Dynamic suggestions will appear here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enhanced Filters -->
+            <div class="filters-section">
+                <div class="filter-group">
+                    <div class="filter-label">Categories:</div>
+                    <div class="filter-chips" id="categoryFilters">
+                        <div class="filter-chip active" onclick="filterByCategory('all')">
+                            <span>🔗</span> All
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="filter-group">
+                    <div class="filter-label">Sort:</div>
+                    <div class="filter-chips">
+                        <div class="filter-chip active" onclick="sortLinks('recent')">
+                            <span>🕒</span> Recent
+                        </div>
+                        <div class="filter-chip" onclick="sortLinks('popular')">
+                            <span>🔥</span> Popular
+                        </div>
+                        <div class="filter-chip" onclick="sortLinks('alphabetical')">
+                            <span>🔤</span> A-Z
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Links Display -->
+            <div class="links-grid" id="linksContainer">
+                <!-- Links will be dynamically generated here -->
+            </div>
+
+            <!-- Quick Add Section -->
+            <div class="quick-add-section" id="quickAddSection" style="display: none;">
+                <div class="welcome-action" onclick="openAddModal()">
+                    <div class="action-icon">➕</div>
+                    <div class="action-title">Add Your First Link</div>
+                    <div class="action-description">Start building your collection</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Action Menu -->
+    <div class="floating-menu">
+        <div class="fab-menu" id="fabMenu">
+            <a href="#" class="fab-item" onclick="openAddModal()">
+                <span>➕</span> Add Link
+            </a>
+            <a href="#" class="fab-item" onclick="importFromFile()">
+                <span>📥</span> Import
+            </a>
+            <a href="#" class="fab-item" onclick="exportLinks()">
+                <span>📤</span> Export
+            </a>
+            <a href="#" class="fab-item" onclick="toggleInsights()">
+                <span>📊</span> Insights
+            </a>
+        </div>
+        <button class="fab-main" onclick="toggleFabMenu()" id="fabMain">
+            ➕
+        </button>
+    </div>
+
+    <!-- Enhanced Modal -->
+    <div class="modal" id="addModal" onclick="closeModalOnOutside(event)">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 style="margin-bottom: 0.5rem;">Add New Link</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                    Save and organize your important links with smart categorization
+                </p>
+            </div>
+            
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Link Name</label>
+                <input 
+                    type="text" 
+                    id="linkName" 
+                    placeholder="My Project" 
+                    style="width: 100%; padding: 1rem; background: var(--bg-input); border: 1px solid var(--border-subtle); border-radius: 8px; color: var(--text-primary);"
+                >
+            </div>
+            
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">URL</label>
+                <input 
+                    type="url" 
+                    id="linkUrl" 
+                    placeholder="https://example.com" 
+                    style="width: 100%; padding: 1rem; background: var(--bg-input); border: 1px solid var(--border-subtle); border-radius: 8px; color: var(--text-primary);"
+                    oninput="autoDetectMetadata()"
+                >
+            </div>
+            
+            <div style="margin-bottom: 2rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Category (Auto-detected)</label>
+                <select 
+                    id="linkCategory" 
+                    style="width: 100%; padding: 1rem; background: var(--bg-input); border: 1px solid var(--border-subtle); border-radius: 8px; color: var(--text-primary);"
+                >
+                    <option value="general">🔗 General</option>
+                    <option value="design">🎨 Design</option>
+                    <option value="dev">⚡ Development</option>
+                    <option value="docs">📄 Documentation</option>
+                    <option value="communication">💬 Communication</option>
+                    <option value="recruiting">👥 Recruiting</option>
+                </select>
+            </div>
+            
+            <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                <button 
+                    onclick="closeModal()" 
+                    style="padding: 0.75rem 1.5rem; background: var(--glass-bg); border: 1px solid var(--border-subtle); border-radius: 8px; color: var(--text-secondary); cursor: pointer;"
+                >
+                    Cancel
+                </button>
+                <button 
+                    onclick="addNewLink()" 
+                    style="padding: 0.75rem 1.5rem; background: var(--gradient-primary); border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer;"
+                >
+                    Save Link
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer">
+        <!-- Toast notifications will appear here -->
+    </div>
+
+    <script>
+        // Enhanced state management
+        let appState = {
+            links: [],
+            currentView: 'grid',
+            currentSort: 'recent',
+            currentFilter: 'all',
+            searchQuery: '',
+            fabMenuOpen: false,
+            insightsVisible: false,
+            collections: [{ id: 'all', name: 'All Links', links: [] }]
+        };
+
+        // Enhanced link management
+        const linkManager = {
+            autoTag(url, name) {
+                const urlLower = url.toLowerCase();
+                const nameLower = name.toLowerCase();
+                
+                const patterns = {
+                    design: ['figma', 'canva', 'sketch', 'adobe', 'dribbble'],
+                    dev: ['github', 'stackoverflow', 'codepen', 'replit', 'vercel'],
+                    docs: ['notion', 'docs.google', 'confluence', 'gitbook'],
+                    communication: ['slack', 'discord', 'teams', 'zoom'],
+                    recruiting: ['linkedin', 'greenhouse', 'lever', 'workday']
+                };
+                
+                for (const [category, keywords] of Object.entries(patterns)) {
+                    if (keywords.some(keyword => 
+                        urlLower.includes(keyword) || nameLower.includes(keyword)
+                    )) {
+                        return category;
+                    }
+                }
+                
+                return 'general';
+            },
+
+            async fetchMetadata(url) {
+                try {
+                    // Simulate metadata fetching
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    
+                    const domain = new URL(url).hostname;
+                    return {
+                        title: `Page from ${domain}`,
+                        description: 'Auto-detected description',
+                        favicon: `https://www.google.com/s2/favicons?domain=${domain}&sz=32`
+                    };
+                } catch (error) {
+                    return null;
+                }
+            },
+
+            createLink(name, url, category = null) {
+                const id = Date.now() + Math.random();
+                const detectedCategory = category || this.autoTag(url, name);
+                
+                return {
+                    id,
+                    name,
+                    url,
+                    category: detectedCategory,
+                    createdAt: new Date().toISOString(),
+                    lastUsed: null,
+                    useCount: 0,
+                    metadata: {}
+                };
+            }
+        };
+
+        // Enhanced UI management
+        const uiManager = {
+            showToast(message, type = 'success') {
+                const container = document.getElementById('toastContainer');
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                
+                const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : '⚠️';
+                toast.innerHTML = `
+                    <span style="font-size: 1.25rem;">${icon}</span>
+                    <span>${message}</span>
+                `;
+                
+                container.appendChild(toast);
+                
+                // Animate in
+                setTimeout(() => toast.classList.add('show'), 100);
+                
+                // Remove after delay
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => container.removeChild(toast), 300);
+                }, 3000);
+            },
+
+            updateHeaderStats() {
+                const linkCount = appState.links.length;
+                const collectionsCount = appState.collections.length;
+                const weeklyActivity = appState.links.filter(link => {
+                    const created = new Date(link.createdAt);
+                    const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+                    return created > weekAgo;
+                }).length;
+
+                document.getElementById('linkCountHeader').textContent = linkCount;
+                document.getElementById('collectionsCountHeader').textContent = collectionsCount;
+                document.getElementById('weeklyActivityHeader').textContent = weeklyActivity;
+            },
+
+            renderCategoryFilters() {
+                const categories = ['all', ...new Set(appState.links.map(link => link.category))];
+                const container = document.getElementById('categoryFilters');
+                
+                container.innerHTML = categories.map(category => {
+                    const count = category === 'all' ? appState.links.length : 
+                        appState.links.filter(link => link.category === category).length;
+                    
+                    const icon = this.getCategoryIcon(category);
+                    const isActive = appState.currentFilter === category ? 'active' : '';
+                    
+                    return `
+                        <div class="filter-chip ${isActive}" onclick="filterByCategory('${category}')">
+                            <span>${icon}</span> ${this.formatCategory(category)} (${count})
+                        </div>
+                    `;
+                }).join('');
+            },
+
+            getCategoryIcon(category) {
+                const icons = {
+                    all: '🔗',
+                    design: '🎨',
+                    dev: '⚡',
+                    docs: '📄',
+                    communication: '💬',
+                    recruiting: '👥',
+                    general: '🔗'
+                };
+                return icons[category] || '🔗';
+            },
+
+            formatCategory(category) {
+                return category === 'all' ? 'All' : 
+                    category.charAt(0).toUpperCase() + category.slice(1);
+            },
+
+            renderLinks() {
+                const container = document.getElementById('linksContainer');
+                const filteredLinks = this.getFilteredLinks();
+                const sortedLinks = this.getSortedLinks(filteredLinks);
+                
+                if (sortedLinks.length === 0) {
+                    if (appState.searchQuery) {
+                        container.innerHTML = `
+                            <div style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+                                <div style="font-size: 3rem; margin-bottom: 1rem;">🔍</div>
+                                <h3>No links found</h3>
+                                <p style="color: var(--text-secondary);">Try adjusting your search or filters</p>
+                            </div>
+                        `;
+                    } else {
+                        document.getElementById('quickAddSection').style.display = 'block';
+                        container.style.display = 'none';
+                        return;
+                    }
+                } else {
+                    document.getElementById('quickAddSection').style.display = 'none';
+                    container.style.display = 'grid';
+                }
+                
+                container.innerHTML = sortedLinks.map(link => this.renderLinkCard(link)).join('');
+            },
+
+            renderLinkCard(link) {
+                const favicon = link.metadata?.favicon || 
+                    `https://www.google.com/s2/favicons?domain=${new URL(link.url).hostname}&sz=32`;
+                
+                const relativeTime = this.getRelativeTime(new Date(link.createdAt));
+                const categoryClass = `tag-${link.category}`;
+                
+                return `
+                    <div class="link-card animate-in" onclick="openLink('${link.url}', ${link.id})">
+                        <div class="link-header">
+                            <div class="link-favicon">
+                                <img src="${favicon}" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <div style="display: none; font-size: 1.5rem;">${this.getCategoryIcon(link.category)}</div>
+                            </div>
+                            <div class="link-info">
+                                <div class="link-name">${this.escapeHtml(link.name)}</div>
+                                <div class="link-url">${this.truncateUrl(link.url)}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="link-metadata">
+                            <div class="metadata-item">
+                                <span>📅</span> ${relativeTime}
+                            </div>
+                            ${link.useCount > 0 ? `
+                                <div class="metadata-item">
+                                    <span>👆</span> ${link.useCount} clicks
+                                </div>
+                            ` : ''}
+                        </div>
+                        
+                        <div class="link-tags">
+                            <div class="link-tag ${categoryClass}">
+                                ${this.getCategoryIcon(link.category)} ${this.formatCategory(link.category)}
+                            </div>
+                        </div>
+                        
+                        <div class="link-actions">
+                            <button class="action-btn" onclick="event.stopPropagation(); copyToClipboard('${link.url}')" title="Copy URL">
+                                📋
+                            </button>
+                            <button class="action-btn" onclick="event.stopPropagation(); editLink(${link.id})" title="Edit">
+                                ✏️
+                            </button>
+                            <button class="action-btn" onclick="event.stopPropagation(); deleteLink(${link.id})" title="Delete">
+                                🗑️
+                            </button>
+                        </div>
+                    </div>
+                `;
+            },
+
+            getFilteredLinks() {
+                let filtered = appState.links;
+                
+                // Apply category filter
+                if (appState.currentFilter !== 'all') {
+                    filtered = filtered.filter(link => link.category === appState.currentFilter);
+                }
+                
+                // Apply search filter
+                if (appState.searchQuery) {
+                    const query = appState.searchQuery.toLowerCase();
+                    filtered = filtered.filter(link => 
+                        link.name.toLowerCase().includes(query) ||
+                        link.url.toLowerCase().includes(query) ||
+                        link.category.toLowerCase().includes(query)
+                    );
+                }
+                
+                return filtered;
+            },
+
+            getSortedLinks(links) {
+                const sorted = [...links];
+                
+                switch (appState.currentSort) {
+                    case 'recent':
+                        return sorted.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                    case 'popular':
+                        return sorted.sort((a, b) => (b.useCount || 0) - (a.useCount || 0));
+                    case 'alphabetical':
+                        return sorted.sort((a, b) => a.name.localeCompare(b.name));
+                    default:
+                        return sorted;
+                }
+            },
+
+            getRelativeTime(date) {
+                const now = new Date();
+                const diff = now - date;
+                const minutes = Math.floor(diff / 60000);
+                const hours = Math.floor(diff / 3600000);
+                const days = Math.floor(diff / 86400000);
+                
+                if (minutes < 1) return 'Just now';
+                if (minutes < 60) return `${minutes}m ago`;
+                if (hours < 24) return `${hours}h ago`;
+                if (days < 7) return `${days}d ago`;
+                
+                return date.toLocaleDateString();
+            },
+
+            truncateUrl(url) {
+                try {
+                    const urlObj = new URL(url);
+                    const domain = urlObj.hostname.replace('www.', '');
+                    return domain.length > 30 ? domain.substring(0, 27) + '...' : domain;
+                } catch {
+                    return url.length > 30 ? url.substring(0, 27) + '...' : url;
+                }
+            },
+
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+        };
+
+        // Core functions
+        function showQuickStart() {
+            document.getElementById('welcomeState').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+            document.getElementById('quickAddSection').style.display = 'block';
+            openAddModal();
+        }
+
+        function openAddModal() {
+            document.getElementById('addModal').classList.add('show');
+            setTimeout(() => document.getElementById('linkName').focus(), 100);
+        }
+
+        function closeModal() {
+            document.getElementById('addModal').classList.remove('show');
+        }
+
+        function closeModalOnOutside(event) {
+            if (event.target === event.currentTarget) {
+                closeModal();
+            }
+        }
+
+        async function autoDetectMetadata() {
+            const url = document.getElementById('linkUrl').value;
+            if (!url) return;
+            
+            try {
+                const metadata = await linkManager.fetchMetadata(url);
+                if (metadata && !document.getElementById('linkName').value) {
+                    document.getElementById('linkName').value = metadata.title;
+                }
+                
+                // Auto-select category
+                const category = linkManager.autoTag(url, metadata?.title || '');
+                document.getElementById('linkCategory').value = category;
+            } catch (error) {
+                console.log('Could not fetch metadata');
+            }
+        }
+
+        function addNewLink() {
+            const name = document.getElementById('linkName').value.trim();
+            const url = document.getElementById('linkUrl').value.trim();
+            const category = document.getElementById('linkCategory').value;
+            
+            if (!name || !url) {
+                uiManager.showToast('Please fill in all fields', 'error');
+                return;
+            }
+            
+            try {
+                new URL(url);
+            } catch {
+                uiManager.showToast('Please enter a valid URL', 'error');
+                return;
+            }
+            
+            const newLink = linkManager.createLink(name, url, category);
+            appState.links.push(newLink);
+            
+            // Reset form
+            document.getElementById('linkName').value = '';
+            document.getElementById('linkUrl').value = '';
+            document.getElementById('linkCategory').value = 'general';
+            
+            closeModal();
+            updateDisplay();
+            
+            // Show main app if this is the first link
+            if (appState.links.length === 1) {
+                document.getElementById('welcomeState').style.display = 'none';
+                document.getElementById('mainApp').style.display = 'block';
+            }
+            
+            uiManager.showToast(`Added "${name}" to your collection!`);
+        }
+
+        function openLink(url, linkId) {
+            // Track usage
+            const link = appState.links.find(l => l.id === linkId);
+            if (link) {
+                link.useCount = (link.useCount || 0) + 1;
+                link.lastUsed = new Date().toISOString();
+                updateDisplay();
+            }
+            
+            window.open(url, '_blank');
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                uiManager.showToast('URL copied to clipboard!');
+            });
+        }
+
+        function deleteLink(linkId) {
+            if (confirm('Are you sure you want to delete this link?')) {
+                appState.links = appState.links.filter(link => link.id !== linkId);
+                updateDisplay();
+                uiManager.showToast('Link deleted');
+            }
+        }
+
+        function filterByCategory(category) {
+            appState.currentFilter = category;
+            
+            // Update filter chips
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            uiManager.renderLinks();
+        }
+
+        function sortLinks(sortType) {
+            appState.currentSort = sortType;
+            
+            // Update sort chips
+            document.querySelectorAll('.filter-chips').forEach(group => {
+                group.querySelectorAll('.filter-chip').forEach(chip => {
+                    chip.classList.remove('active');
+                });
+            });
+            event.target.classList.add('active');
+            
+            uiManager.renderLinks();
+        }
+
+        function handleSearch() {
+            appState.searchQuery = document.getElementById('mainSearch').value;
+            uiManager.renderLinks();
+        }
+
+        function switchView(viewType) {
+            appState.currentView = viewType;
+            
+            document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(viewType + 'ViewBtn').classList.add('active');
+            
+            // You could implement different view styles here
+            uiManager.renderLinks();
+        }
+
+        function toggleFabMenu() {
+            appState.fabMenuOpen = !appState.fabMenuOpen;
+            const menu = document.getElementById('fabMenu');
+            const main = document.getElementById('fabMain');
+            
+            if (appState.fabMenuOpen) {
+                menu.classList.add('show');
+                main.style.transform = 'rotate(45deg)';
+            } else {
+                menu.classList.remove('show');
+                main.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        function toggleInsights() {
+            appState.insightsVisible = !appState.insightsVisible;
+            const panel = document.getElementById('insightsPanel');
+            
+            if (appState.insightsVisible) {
+                panel.style.display = 'block';
+                updateInsights();
+            } else {
+                panel.style.display = 'none';
+            }
+        }
+
+        function updateInsights() {
+            const totalClicks = appState.links.reduce((sum, link) => sum + (link.useCount || 0), 0);
+            const thisWeekLinks = appState.links.filter(link => {
+                const created = new Date(link.createdAt);
+                const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+                return created > weekAgo;
+            }).length;
+            
+            const categoryCount = {};
+            appState.links.forEach(link => {
+                categoryCount[link.category] = (categoryCount[link.category] || 0) + 1;
+            });
+            
+            const topCategory = Object.entries(categoryCount)
+                .sort(([,a], [,b]) => b - a)[0]?.[0] || 'none';
+            
+            const productivityScore = Math.min(100, Math.round(
+                (totalClicks / Math.max(1, appState.links.length)) * 20
+            ));
+            
+            document.getElementById('mostUsedCount').textContent = totalClicks;
+            document.getElementById('weeklyGrowth').textContent = `+${thisWeekLinks}`;
+            document.getElementById('topCategory').textContent = uiManager.formatCategory(topCategory);
+            document.getElementById('productivityScore').textContent = `${productivityScore}%`;
+        }
+
+        function updateDisplay() {
+            uiManager.updateHeaderStats();
+            uiManager.renderCategoryFilters();
+            uiManager.renderLinks();
+            
+            if (appState.insightsVisible) {
+                updateInsights();
+            }
+        }
+
+        function importFromFile() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const data = JSON.parse(event.target.result);
+                        const links = Array.isArray(data) ? data : data.links || [];
+                        
+                        links.forEach(linkData => {
+                            if (linkData.name && linkData.url) {
+                                const link = linkManager.createLink(
+                                    linkData.name,
+                                    linkData.url,
+                                    linkData.category
+                                );
+                                appState.links.push(link);
+                            }
+                        });
+                        
+                        updateDisplay();
+                        
+                        if (appState.links.length > 0) {
+                            document.getElementById('welcomeState').style.display = 'none';
+                            document.getElementById('mainApp').style.display = 'block';
+                        }
+                        
+                        uiManager.showToast(`Imported ${links.length} links successfully!`);
+                    } catch (error) {
+                        uiManager.showToast('Error importing file', 'error');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        function exportLinks() {
+            if (appState.links.length === 0) {
+                uiManager.showToast('No links to export', 'error');
+                return;
+            }
+            
+            const exportData = {
+                metadata: {
+                    exported: new Date().toISOString(),
+                    version: "2.0",
+                    source: "WorkflowOS Link Manager",
+                    count: appState.links.length
+                },
+                links: appState.links.map(link => ({
+                    name: link.name,
+                    url: link.url,
+                    category: link.category
+                }))
+            };
+            
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `workflowos-links-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            uiManager.showToast('Links exported successfully!');
+        }
+
+        function browseTemplates() {
+            uiManager.showToast('Template browser coming soon!', 'warning');
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                openAddModal();
+            }
+            if (e.key === 'Escape') {
+                closeModal();
+                if (appState.fabMenuOpen) {
+                    toggleFabMenu();
+                }
+            }
+        });
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDisplay();
+            
+            // Show insights panel if user has links
+            if (appState.links.length >= 5) {
+                toggleInsights();
+            }
+        });
+
+        // Click outside to close FAB menu
+        document.addEventListener('click', (e) => {
+            if (appState.fabMenuOpen && !e.target.closest('.floating-menu')) {
+                toggleFabMenu();
+            }
+        });
+    </script>
+</body>
+</html>
