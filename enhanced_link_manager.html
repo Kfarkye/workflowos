@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced Link Manager v2.0 - WorkflowOS Compatible</title>
+    <title>WorkflowOS Link Manager v2.5 Enhanced</title>
     <style>
         :root {
             --bg-primary: #0a0a0a;
+            --bg-secondary: #121212;
             --bg-card: #1e1e1e;
             --bg-input: #2a2a2a;
             --bg-elevated: #242424;
@@ -41,745 +42,869 @@
             --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+    body.light-mode {
+        --bg-primary: #f8fafc;
+        --bg-secondary: #ffffff;
+        --bg-card: #ffffff;
+        --bg-input: #f1f5f9;
+        --bg-elevated: #f8fafc;
+        --text-primary: #0f172a;
+        --text-secondary: #475569;
+        --text-muted: #64748b;
+        --border-subtle: #e2e8f0;
+        --glass-bg: rgba(0, 0, 0, 0.02);
+        --glass-border: rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+        --gradient-card: linear-gradient(135deg, rgba(59, 130, 246, 0.02), rgba(139, 92, 246, 0.02));
+    }
 
-        body {
-            font-family: var(--font-family);
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            min-height: 100vh;
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        /* Enhanced Header with Quick Actions */
-        .header {
-            background: var(--bg-card);
-            border-bottom: 1px solid var(--border-subtle);
-            padding: var(--space-lg) var(--space-2xl);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            backdrop-filter: blur(20px);
-        }
+    body {
+        font-family: var(--font-family);
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        min-height: 100vh;
+        line-height: 1.6;
+        overflow-x: hidden;
+        transition: var(--transition-fast);
+    }
 
-        .header-content {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
+    .header {
+        background: var(--bg-card);
+        border-bottom: 1px solid var(--border-subtle);
+        padding: var(--space-lg) var(--space-2xl);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        backdrop-filter: blur(20px);
+    }
 
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: var(--space-lg);
-        }
+    .header-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        max-width: 1600px;
+        margin: 0 auto;
+    }
 
-        .header-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
+    .header-left {
+        display: flex;
+        align-items: center;
+        gap: var(--space-lg);
+    }
 
-        .quick-stats-header {
-            display: flex;
-            align-items: center;
-            gap: var(--space-md);
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-        }
+    .header-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
 
-        .stat-badge {
-            background: var(--glass-bg);
-            border: 1px solid var(--border-subtle);
-            padding: var(--space-xs) var(--space-sm);
-            border-radius: var(--radius-md);
-            font-weight: 500;
-        }
+    .quick-stats-header {
+        display: flex;
+        align-items: center;
+        gap: var(--space-md);
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+    }
 
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: var(--space-md);
-        }
+    .stat-badge {
+        background: var(--glass-bg);
+        border: 1px solid var(--border-subtle);
+        padding: var(--space-xs) var(--space-sm);
+        border-radius: var(--radius-md);
+        font-weight: 500;
+    }
 
-        .quick-add-btn {
-            background: var(--gradient-primary);
-            color: white;
-            border: none;
-            padding: var(--space-sm) var(--space-lg);
-            border-radius: var(--radius-lg);
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition-fast);
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
-        }
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: var(--space-md);
+    }
 
-        .quick-add-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
+    .theme-toggle {
+        background: var(--glass-bg);
+        border: 1px solid var(--border-subtle);
+        color: var(--text-secondary);
+        padding: var(--space-sm);
+        border-radius: var(--radius-lg);
+        cursor: pointer;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition-fast);
+    }
 
-        .view-toggle {
-            display: flex;
-            background: var(--bg-input);
-            border-radius: var(--radius-lg);
-            padding: 2px;
-        }
+    .theme-toggle:hover {
+        background: var(--accent-primary);
+        color: white;
+        border-color: var(--accent-primary);
+    }
 
-        .view-btn {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            padding: var(--space-sm) var(--space-md);
-            border-radius: var(--radius-md);
-            cursor: pointer;
-            transition: var(--transition-fast);
-        }
+    .quick-add-btn {
+        background: var(--gradient-primary);
+        color: white;
+        border: none;
+        padding: var(--space-sm) var(--space-lg);
+        border-radius: var(--radius-lg);
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition-fast);
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+    }
 
-        .view-btn.active {
-            background: var(--accent-primary);
-            color: white;
-        }
+    .quick-add-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
 
-        /* Enhanced Search with AI Suggestions */
-        .search-section {
-            background: var(--gradient-card);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--radius-xl);
-            padding: var(--space-xl);
-            margin-bottom: var(--space-xl);
-            backdrop-filter: blur(10px);
-        }
+    .welcome-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: var(--space-3xl);
+        text-align: center;
+    }
 
-        .search-container {
-            position: relative;
-            max-width: 600px;
-            margin: 0 auto;
-        }
+    .welcome-hero {
+        margin-bottom: var(--space-3xl);
+    }
 
-        .search-input-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
+    .welcome-icon {
+        font-size: 5rem;
+        margin-bottom: var(--space-xl);
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
 
-        .search-input {
-            width: 100%;
-            background: var(--bg-elevated);
-            border: 2px solid var(--border-subtle);
-            border-radius: var(--radius-lg);
-            padding: var(--space-lg) var(--space-xl);
-            padding-left: 3rem;
-            color: var(--text-primary);
-            font-size: 1.125rem;
-            transition: var(--transition-medium);
-        }
+    .welcome-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: var(--space-lg);
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
 
-        .search-input:focus {
-            outline: none;
-            border-color: var(--accent-primary);
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
-        }
+    .welcome-subtitle {
+        font-size: 1.25rem;
+        color: var(--text-secondary);
+        margin-bottom: var(--space-2xl);
+    }
 
-        .search-icon {
-            position: absolute;
-            left: var(--space-lg);
-            font-size: 1.25rem;
-            color: var(--text-muted);
-            z-index: 1;
-        }
+    .welcome-actions {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: var(--space-lg);
+        margin-bottom: var(--space-2xl);
+    }
 
-        .search-suggestions {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-lg);
-            margin-top: var(--space-sm);
-            max-height: 300px;
-            overflow-y: auto;
-            z-index: 10;
-            display: none;
-        }
+    .welcome-action {
+        background: var(--gradient-card);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-xl);
+        padding: var(--space-2xl);
+        cursor: pointer;
+        transition: var(--transition-medium);
+        backdrop-filter: blur(10px);
+    }
 
-        .search-suggestion {
-            padding: var(--space-md) var(--space-lg);
-            cursor: pointer;
-            transition: var(--transition-fast);
-            border-bottom: 1px solid var(--border-subtle);
-        }
+    .welcome-action:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-md);
+        border-color: var(--accent-primary);
+    }
 
-        .search-suggestion:hover {
-            background: var(--glass-bg);
-        }
+    .action-icon {
+        font-size: 3rem;
+        margin-bottom: var(--space-lg);
+    }
 
-        .search-suggestion:last-child {
-            border-bottom: none;
-        }
+    .action-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: var(--space-sm);
+    }
 
-        /* Enhanced Filters */
-        .filters-section {
-            display: flex;
-            align-items: center;
-            gap: var(--space-lg);
-            margin-bottom: var(--space-xl);
-            flex-wrap: wrap;
-        }
+    .action-description {
+        color: var(--text-secondary);
+    }
 
-        .filter-group {
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
-        }
+    #appLayout {
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        gap: var(--space-xl);
+        max-width: 1600px;
+        margin: var(--space-xl) auto;
+        padding: 0 var(--space-2xl);
+    }
 
-        .filter-label {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
+    .collections-panel {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-xl);
+        padding: var(--space-xl);
+        height: fit-content;
+        position: sticky;
+        top: 120px;
+        backdrop-filter: blur(10px);
+    }
 
-        .filter-chips {
-            display: flex;
-            gap: var(--space-sm);
-            flex-wrap: wrap;
-        }
+    .collections-header {
+        font-size: 1.125rem;
+        font-weight: 600;
+        margin-bottom: var(--space-lg);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
 
-        .filter-chip {
-            background: var(--glass-bg);
-            border: 1px solid var(--border-subtle);
-            color: var(--text-secondary);
-            padding: var(--space-sm) var(--space-md);
-            border-radius: var(--radius-lg);
-            font-size: 0.875rem;
-            cursor: pointer;
-            transition: var(--transition-fast);
-            display: flex;
-            align-items: center;
-            gap: var(--space-xs);
-        }
+    .collection-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--space-md);
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        transition: var(--transition-fast);
+        margin-bottom: var(--space-xs);
+        font-size: 0.9rem;
+    }
 
-        .filter-chip:hover {
-            background: var(--accent-primary);
-            color: white;
-            border-color: var(--accent-primary);
-        }
+    .collection-item:hover {
+        background: var(--glass-bg);
+    }
 
-        .filter-chip.active {
-            background: var(--accent-primary);
-            color: white;
-            border-color: var(--accent-primary);
-        }
+    .collection-item.active {
+        background: var(--accent-primary);
+        color: white;
+        font-weight: 500;
+    }
 
-        /* Enhanced Link Cards */
-        .links-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: var(--space-lg);
-            margin-bottom: var(--space-2xl);
-        }
+    .collection-count {
+        font-size: 0.75rem;
+        background: var(--glass-bg);
+        padding: 2px 6px;
+        border-radius: var(--radius-sm);
+        min-width: 20px;
+        text-align: center;
+    }
 
-        .link-card {
-            background: var(--gradient-card);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--radius-xl);
-            padding: var(--space-xl);
-            transition: var(--transition-medium);
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(10px);
-        }
+    .collection-item.active .collection-count {
+        background: rgba(255, 255, 255, 0.2);
+    }
 
-        .link-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--gradient-primary);
-            transform: scaleX(0);
-            transition: var(--transition-medium);
-            transform-origin: left;
-        }
+    .add-collection-btn {
+        width: 100%;
+        margin-top: var(--space-lg);
+        padding: var(--space-md);
+        background: var(--glass-bg);
+        border: 1px dashed var(--border-subtle);
+        color: var(--text-secondary);
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        transition: var(--transition-fast);
+        font-size: 0.875rem;
+    }
 
-        .link-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-            border-color: var(--accent-primary);
-        }
+    .add-collection-btn:hover {
+        background: var(--accent-primary);
+        color: white;
+        border-color: var(--accent-primary);
+    }
 
-        .link-card:hover::before {
-            transform: scaleX(1);
-        }
+    .search-section {
+        background: var(--gradient-card);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-xl);
+        padding: var(--space-xl);
+        margin-bottom: var(--space-xl);
+        backdrop-filter: blur(10px);
+    }
 
-        .link-header {
-            display: flex;
-            align-items: flex-start;
-            gap: var(--space-md);
-            margin-bottom: var(--space-lg);
-        }
+    .search-container {
+        position: relative;
+        max-width: 600px;
+        margin: 0 auto;
+    }
 
-        .link-favicon {
-            width: 48px;
-            height: 48px;
-            border-radius: var(--radius-lg);
-            background: var(--bg-elevated);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            flex-shrink: 0;
-        }
+    .search-input-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
 
-        .link-info {
-            flex: 1;
-            min-width: 0;
-        }
+    .search-input {
+        width: 100%;
+        background: var(--bg-elevated);
+        border: 2px solid var(--border-subtle);
+        border-radius: var(--radius-lg);
+        padding: var(--space-lg) var(--space-xl);
+        padding-left: 3rem;
+        color: var(--text-primary);
+        font-size: 1.125rem;
+        transition: var(--transition-medium);
+    }
 
-        .link-name {
-            font-size: 1.125rem;
-            font-weight: 600;
-            margin-bottom: var(--space-xs);
-            word-break: break-word;
-        }
+    .search-input:focus {
+        outline: none;
+        border-color: var(--accent-primary);
+        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    }
 
-        .link-url {
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-            word-break: break-all;
-            margin-bottom: var(--space-sm);
-        }
+    .search-icon {
+        position: absolute;
+        left: var(--space-lg);
+        font-size: 1.25rem;
+        color: var(--text-muted);
+        z-index: 1;
+    }
 
-        .link-metadata {
-            display: flex;
-            align-items: center;
-            gap: var(--space-md);
-            margin-bottom: var(--space-lg);
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
+    .filters-section {
+        display: flex;
+        align-items: center;
+        gap: var(--space-lg);
+        margin-bottom: var(--space-xl);
+        flex-wrap: wrap;
+    }
 
-        .metadata-item {
-            display: flex;
-            align-items: center;
-            gap: var(--space-xs);
-        }
+    .filter-group {
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+    }
 
-        .link-tags {
-            display: flex;
-            gap: var(--space-xs);
-            margin-bottom: var(--space-lg);
-            flex-wrap: wrap;
-        }
+    .filter-label {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        font-weight: 500;
+    }
 
-        .link-tag {
-            padding: var(--space-xs) var(--space-sm);
-            border-radius: var(--radius-md);
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
+    .filter-chips {
+        display: flex;
+        gap: var(--space-sm);
+        flex-wrap: wrap;
+    }
 
-        .tag-design { background: rgba(147, 51, 234, 0.2); color: #a855f7; }
-        .tag-docs { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
-        .tag-dev { background: rgba(16, 185, 129, 0.2); color: #10b981; }
-        .tag-recruiting { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
-        .tag-communication { background: rgba(236, 72, 153, 0.2); color: #ec4899; }
-        .tag-general { background: rgba(107, 114, 128, 0.2); color: #9ca3af; }
+    .filter-chip {
+        background: var(--glass-bg);
+        border: 1px solid var(--border-subtle);
+        color: var(--text-secondary);
+        padding: var(--space-sm) var(--space-md);
+        border-radius: var(--radius-lg);
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: var(--transition-fast);
+        display: flex;
+        align-items: center;
+        gap: var(--space-xs);
+    }
 
-        .link-actions {
-            display: flex;
-            gap: var(--space-sm);
-            opacity: 0;
-            transition: var(--transition-medium);
-        }
+    .filter-chip:hover, .filter-chip.active {
+        background: var(--accent-primary);
+        color: white;
+        border-color: var(--accent-primary);
+    }
 
-        .link-card:hover .link-actions {
-            opacity: 1;
-        }
+    .links-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+        gap: var(--space-lg);
+        margin-bottom: var(--space-2xl);
+    }
 
-        .action-btn {
-            background: var(--bg-elevated);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-md);
-            padding: var(--space-sm);
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: var(--transition-fast);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 32px;
-            height: 32px;
-        }
+    .link-card {
+        background: var(--gradient-card);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-xl);
+        padding: var(--space-xl);
+        transition: var(--transition-medium);
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
 
-        .action-btn:hover {
-            background: var(--accent-primary);
-            color: white;
-            border-color: var(--accent-primary);
-        }
+    .link-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: var(--gradient-primary);
+        transform: scaleX(0);
+        transition: var(--transition-medium);
+        transform-origin: left;
+    }
 
-        /* Smart Insights Panel */
-        .insights-panel {
-            background: var(--gradient-card);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--radius-xl);
-            padding: var(--space-xl);
-            margin-bottom: var(--space-xl);
-            backdrop-filter: blur(10px);
-        }
+    .link-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        border-color: var(--accent-primary);
+    }
 
-        .insights-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: var(--space-lg);
-        }
+    .link-card:hover::before {
+        transform: scaleX(1);
+    }
 
-        .insights-title {
-            font-size: 1.125rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
-        }
+    .link-header {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--space-md);
+        margin-bottom: var(--space-lg);
+    }
 
-        .insights-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: var(--space-lg);
-        }
+    .link-favicon {
+        width: 48px;
+        height: 48px;
+        border-radius: var(--radius-lg);
+        background: var(--bg-elevated);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+        overflow: hidden;
+    }
 
-        .insight-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-lg);
-            padding: var(--space-lg);
-            text-align: center;
-        }
+    .link-favicon img {
+        width: 32px;
+        height: 32px;
+        object-fit: cover;
+    }
 
-        .insight-icon {
-            font-size: 2rem;
-            margin-bottom: var(--space-sm);
-        }
+    .link-info {
+        flex: 1;
+        min-width: 0;
+    }
 
-        .insight-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--accent-primary);
-            margin-bottom: var(--space-xs);
-        }
+    .link-name {
+        font-size: 1.125rem;
+        font-weight: 600;
+        margin-bottom: var(--space-xs);
+        word-break: break-word;
+    }
 
-        .insight-label {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-        }
+    .link-url {
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+        word-break: break-all;
+        margin-bottom: var(--space-sm);
+        text-decoration: none;
+    }
 
-        /* Floating Action Menu */
-        .floating-menu {
-            position: fixed;
-            bottom: var(--space-2xl);
-            right: var(--space-2xl);
-            z-index: 100;
-        }
+    .link-url:hover {
+        color: var(--accent-primary);
+    }
 
-        .fab-main {
-            width: 64px;
-            height: 64px;
-            background: var(--gradient-primary);
-            border: none;
-            border-radius: 50%;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-            box-shadow: var(--shadow-md);
-            transition: var(--transition-medium);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    .link-notes {
+        font-style: italic;
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+        padding: var(--space-sm);
+        background: var(--glass-bg);
+        border-radius: var(--radius-md);
+        margin-bottom: var(--space-lg);
+        line-height: 1.4;
+    }
 
-        .fab-main:hover {
-            transform: scale(1.1);
-            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
-        }
+    .link-metadata {
+        display: flex;
+        align-items: center;
+        gap: var(--space-md);
+        margin-bottom: var(--space-lg);
+        font-size: 0.75rem;
+        color: var(--text-muted);
+    }
 
-        .fab-menu {
-            position: absolute;
-            bottom: 80px;
-            right: 0;
-            display: flex;
-            flex-direction: column;
-            gap: var(--space-md);
+    .metadata-item {
+        display: flex;
+        align-items: center;
+        gap: var(--space-xs);
+    }
+
+    .link-tags {
+        display: flex;
+        gap: var(--space-xs);
+        margin-bottom: var(--space-lg);
+        flex-wrap: wrap;
+    }
+
+    .link-tag {
+        padding: var(--space-xs) var(--space-sm);
+        border-radius: var(--radius-md);
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+
+    .tag-design { background: rgba(147, 51, 234, 0.2); color: #a855f7; }
+    .tag-docs { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+    .tag-dev { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+    .tag-recruiting { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+    .tag-communication { background: rgba(236, 72, 153, 0.2); color: #ec4899; }
+    .tag-general { background: rgba(107, 114, 128, 0.2); color: #9ca3af; }
+
+    .link-actions {
+        display: flex;
+        gap: var(--space-sm);
+        opacity: 0;
+        transition: var(--transition-medium);
+        border-top: 1px solid var(--border-subtle);
+        padding-top: var(--space-lg);
+        margin-top: var(--space-lg);
+    }
+
+    .link-card:hover .link-actions {
+        opacity: 1;
+    }
+
+    .action-btn {
+        background: var(--bg-elevated);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-md);
+        padding: var(--space-sm);
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: var(--transition-fast);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        font-size: 0.875rem;
+    }
+
+    .action-btn:hover {
+        background: var(--accent-primary);
+        color: white;
+        border-color: var(--accent-primary);
+    }
+
+    .floating-menu {
+        position: fixed;
+        bottom: var(--space-2xl);
+        right: var(--space-2xl);
+        z-index: 100;
+    }
+
+    .fab-main {
+        width: 64px;
+        height: 64px;
+        background: var(--gradient-primary);
+        border: none;
+        border-radius: 50%;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        box-shadow: var(--shadow-md);
+        transition: var(--transition-medium);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .fab-main:hover {
+        transform: scale(1.1);
+        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+    }
+
+    .fab-menu {
+        position: absolute;
+        bottom: 80px;
+        right: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-md);
+        opacity: 0;
+        transform: translateY(20px);
+        transition: var(--transition-medium);
+        pointer-events: none;
+    }
+
+    .fab-menu.show {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: all;
+    }
+
+    .fab-item {
+        display: flex;
+        align-items: center;
+        gap: var(--space-md);
+        background: var(--bg-card);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-lg);
+        padding: var(--space-md) var(--space-lg);
+        color: var(--text-primary);
+        text-decoration: none;
+        transition: var(--transition-fast);
+        white-space: nowrap;
+        font-size: 0.875rem;
+    }
+
+    .fab-item:hover {
+        background: var(--accent-primary);
+        border-color: var(--accent-primary);
+        transform: translateX(-4px);
+        color: white;
+    }
+
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(10px);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        opacity: 0;
+        transition: var(--transition-medium);
+    }
+
+    .modal.show {
+        display: flex;
+        opacity: 1;
+    }
+
+    .modal-content {
+        background: var(--bg-card);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-xl);
+        padding: var(--space-2xl);
+        max-width: 700px;
+        width: 90%;
+        transform: scale(0.95);
+        transition: var(--transition-medium);
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .modal.show .modal-content {
+        transform: scale(1);
+    }
+
+    .modal-header {
+        margin-bottom: var(--space-xl);
+    }
+
+    .modal-header h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: var(--space-sm);
+    }
+
+    .form-group {
+        margin-bottom: var(--space-xl);
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: var(--space-sm);
+        font-weight: 500;
+        color: var(--text-primary);
+    }
+
+    .form-input, .form-select, .form-textarea {
+        width: 100%;
+        padding: var(--space-lg);
+        background: var(--bg-input);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-md);
+        color: var(--text-primary);
+        font-size: 1rem;
+        transition: var(--transition-fast);
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+        outline: none;
+        border-color: var(--accent-primary);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-lg);
+    }
+
+    .modal-actions {
+        display: flex;
+        gap: var(--space-lg);
+        justify-content: flex-end;
+        margin-top: var(--space-2xl);
+    }
+
+    .btn-secondary {
+        padding: var(--space-md) var(--space-xl);
+        background: var(--glass-bg);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-md);
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: var(--transition-fast);
+    }
+
+    .btn-secondary:hover {
+        background: var(--bg-elevated);
+    }
+
+    .btn-primary {
+        padding: var(--space-md) var(--space-xl);
+        background: var(--gradient-primary);
+        border: none;
+        border-radius: var(--radius-md);
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition-fast);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .toast-container {
+        position: fixed;
+        top: var(--space-2xl);
+        right: var(--space-2xl);
+        z-index: 1100;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-sm);
+    }
+
+    .toast {
+        background: var(--bg-card);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-lg);
+        padding: var(--space-lg) var(--space-xl);
+        box-shadow: var(--shadow-md);
+        transform: translateX(400px);
+        transition: var(--transition-medium);
+        display: flex;
+        align-items: center;
+        gap: var(--space-md);
+        max-width: 400px;
+    }
+
+    .toast.show {
+        transform: translateX(0);
+    }
+
+    .toast.success {
+        border-left: 4px solid var(--accent-success);
+    }
+
+    .toast.error {
+        border-left: 4px solid var(--accent-danger);
+    }
+
+    .toast.warning {
+        border-left: 4px solid var(--accent-warning);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: var(--space-3xl);
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-xl);
+    }
+
+    .empty-state h3 {
+        font-size: 1.5rem;
+        margin-bottom: var(--space-lg);
+    }
+
+    .empty-state p {
+        color: var(--text-secondary);
+        margin-bottom: var(--space-xl);
+    }
+
+    @keyframes slideIn {
+        from {
             opacity: 0;
             transform: translateY(20px);
-            transition: var(--transition-medium);
-            pointer-events: none;
         }
-
-        .fab-menu.show {
+        to {
             opacity: 1;
             transform: translateY(0);
-            pointer-events: all;
         }
+    }
 
-        .fab-item {
-            display: flex;
-            align-items: center;
-            gap: var(--space-md);
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-lg);
-            padding: var(--space-md) var(--space-lg);
-            color: var(--text-primary);
-            text-decoration: none;
-            transition: var(--transition-fast);
-            white-space: nowrap;
+    .animate-in {
+        animation: slideIn 0.5s ease-out;
+    }
+
+    @media (max-width: 1024px) {
+        #appLayout {
+            grid-template-columns: 1fr;
         }
-
-        .fab-item:hover {
-            background: var(--accent-primary);
-            border-color: var(--accent-primary);
-            transform: translateX(-4px);
-        }
-
-        /* Enhanced Modal */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            opacity: 0;
-            transition: var(--transition-medium);
-        }
-
-        .modal.show {
-            display: flex;
-            opacity: 1;
-        }
-
-        .modal-content {
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-xl);
-            padding: var(--space-2xl);
-            max-width: 600px;
-            width: 90%;
-            transform: scale(0.95);
-            transition: var(--transition-medium);
-        }
-
-        .modal.show .modal-content {
-            transform: scale(1);
-        }
-
-        /* Toast Notifications */
-        .toast-container {
-            position: fixed;
-            top: var(--space-2xl);
-            right: var(--space-2xl);
-            z-index: 1100;
-            display: flex;
-            flex-direction: column;
-            gap: var(--space-sm);
-        }
-
-        .toast {
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-lg);
-            padding: var(--space-lg) var(--space-xl);
-            box-shadow: var(--shadow-md);
-            transform: translateX(400px);
-            transition: var(--transition-medium);
-            display: flex;
-            align-items: center;
-            gap: var(--space-md);
-            max-width: 400px;
-        }
-
-        .toast.show {
-            transform: translateX(0);
-        }
-
-        .toast.success {
-            border-left: 4px solid var(--accent-success);
-        }
-
-        .toast.error {
-            border-left: 4px solid var(--accent-danger);
-        }
-
-        .toast.warning {
-            border-left: 4px solid var(--accent-warning);
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                gap: var(--space-lg);
-                align-items: stretch;
-            }
-
-            .links-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .filters-section {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .floating-menu {
-                bottom: var(--space-lg);
-                right: var(--space-lg);
-            }
-
-            .insights-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        /* Welcome State Enhancement */
-        .welcome-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: var(--space-3xl);
-            text-align: center;
-        }
-
-        .welcome-hero {
-            margin-bottom: var(--space-3xl);
-        }
-
-        .welcome-icon {
-            font-size: 5rem;
+        
+        .collections-panel {
+            position: static;
             margin-bottom: var(--space-xl);
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
-
-        .welcome-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: var(--space-lg);
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        
+        .links-grid {
+            grid-template-columns: 1fr;
         }
-
-        .welcome-subtitle {
-            font-size: 1.25rem;
-            color: var(--text-secondary);
-            margin-bottom: var(--space-2xl);
+        
+        .form-grid {
+            grid-template-columns: 1fr;
         }
+    }
 
-        .welcome-actions {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    @media (max-width: 768px) {
+        .header-content {
+            flex-direction: column;
             gap: var(--space-lg);
-            margin-bottom: var(--space-2xl);
+            align-items: stretch;
         }
-
-        .welcome-action {
-            background: var(--gradient-card);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--radius-xl);
-            padding: var(--space-2xl);
-            cursor: pointer;
-            transition: var(--transition-medium);
-            backdrop-filter: blur(10px);
+        
+        .quick-stats-header {
+            flex-wrap: wrap;
         }
-
-        .welcome-action:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-md);
-            border-color: var(--accent-primary);
+        
+        .filters-section {
+            flex-direction: column;
+            align-items: stretch;
         }
-
-        .action-icon {
-            font-size: 3rem;
-            margin-bottom: var(--space-lg);
+        
+        .floating-menu {
+            bottom: var(--space-lg);
+            right: var(--space-lg);
         }
-
-        .action-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: var(--space-sm);
+        
+        #appLayout {
+            padding: 0 var(--space-lg);
         }
-
-        .action-description {
-            color: var(--text-secondary);
-        }
-
-        /* Smooth animations */
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .animate-in {
-            animation: slideIn 0.5s ease-out;
-        }
-
-        /* Loading states */
-        .loading {
-            opacity: 0.6;
-            pointer-events: none;
-        }
-
-        .loading::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 20px;
-            height: 20px;
-            margin: -10px 0 0 -10px;
-            border: 2px solid var(--accent-primary);
-            border-radius: 50%;
-            border-top: 2px solid transparent;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-    </style>
+    }
+</style>
 </head>
 <body>
-    <!-- Enhanced Header -->
     <header class="header">
         <div class="header-content">
             <div class="header-left">
-                <div class="header-title">🔗 WorkflowOS Link Manager v2.0</div>
+                <div class="header-title">🔗 WorkflowOS Link Manager v2.5</div>
                 <div class="quick-stats-header" id="headerStats">
                     <div class="stat-badge">
                         <span id="linkCountHeader">0</span> Links
@@ -793,14 +918,7 @@
                 </div>
             </div>
             <div class="header-actions">
-                <div class="view-toggle">
-                    <button class="view-btn active" onclick="switchView('grid')" id="gridViewBtn">
-                        <span>🔲</span> Grid
-                    </button>
-                    <button class="view-btn" onclick="switchView('list')" id="listViewBtn">
-                        <span>📋</span> List
-                    </button>
-                </div>
+                <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle">☀️</button>
                 <button class="quick-add-btn" onclick="openAddModal()">
                     <span>➕</span> Quick Add
                 </button>
@@ -808,74 +926,48 @@
         </div>
     </header>
 
-    <!-- Main Content -->
-    <div class="container" id="mainContainer">
-        <!-- Welcome State -->
-        <div class="welcome-container" id="welcomeState">
-            <div class="welcome-hero">
-                <div class="welcome-icon">🚀</div>
-                <h1 class="welcome-title">Welcome to Link Manager v2.0</h1>
-                <p class="welcome-subtitle">
-                    Your intelligent workspace for organizing, discovering, and managing all your important links
-                </p>
-            </div>
-
-            <div class="welcome-actions">
-                <div class="welcome-action" onclick="showQuickStart()">
-                    <div class="action-icon">⚡</div>
-                    <div class="action-title">Quick Start</div>
-                    <div class="action-description">Add your first link and start organizing</div>
-                </div>
-                
-                <div class="welcome-action" onclick="importFromFile()">
-                    <div class="action-icon">📥</div>
-                    <div class="action-title">Import Collection</div>
-                    <div class="action-description">Upload existing bookmarks or links</div>
-                </div>
-                
-                <div class="welcome-action" onclick="browseTemplates()">
-                    <div class="action-icon">📋</div>
-                    <div class="action-title">Use Template</div>
-                    <div class="action-description">Start with pre-built collections</div>
-                </div>
-            </div>
+<div class="container" id="mainContainer">
+    <div class="welcome-container" id="welcomeState">
+        <div class="welcome-hero">
+            <div class="welcome-icon">🚀</div>
+            <h1 class="welcome-title">Welcome to WorkflowOS v2.5</h1>
+            <p class="welcome-subtitle">
+                Enhanced link management with collections, smart import, and AI-powered features
+            </p>
         </div>
 
-        <!-- Main App -->
-        <div class="main-app" id="mainApp" style="display: none;">
-            <!-- Smart Insights Panel -->
-            <div class="insights-panel" id="insightsPanel" style="display: none;">
-                <div class="insights-header">
-                    <div class="insights-title">
-                        <span>📊</span> Smart Insights
-                    </div>
-                    <button onclick="toggleInsights()" class="action-btn">✨</button>
-                </div>
-                <div class="insights-grid">
-                    <div class="insight-card">
-                        <div class="insight-icon">🔥</div>
-                        <div class="insight-value" id="mostUsedCount">0</div>
-                        <div class="insight-label">Most Used</div>
-                    </div>
-                    <div class="insight-card">
-                        <div class="insight-icon">📈</div>
-                        <div class="insight-value" id="weeklyGrowth">+0</div>
-                        <div class="insight-label">This Week</div>
-                    </div>
-                    <div class="insight-card">
-                        <div class="insight-icon">🏷️</div>
-                        <div class="insight-value" id="topCategory">-</div>
-                        <div class="insight-label">Top Category</div>
-                    </div>
-                    <div class="insight-card">
-                        <div class="insight-icon">⭐</div>
-                        <div class="insight-value" id="productivityScore">0%</div>
-                        <div class="insight-label">Productivity</div>
-                    </div>
-                </div>
+        <div class="welcome-actions">
+            <div class="welcome-action" onclick="showQuickStart()">
+                <div class="action-icon">⚡</div>
+                <div class="action-title">Quick Start</div>
+                <div class="action-description">Add your first link and start organizing</div>
             </div>
+            
+            <div class="welcome-action" onclick="importFromFile()">
+                <div class="action-icon">📥</div>
+                <div class="action-title">Import WorkflowOS</div>
+                <div class="action-description">Upload unified_founder_mode.json or github_links.json</div>
+            </div>
+            
+            <div class="welcome-action" onclick="browseTemplates()">
+                <div class="action-icon">📋</div>
+                <div class="action-title">Use Template</div>
+                <div class="action-description">Start with pre-built collections</div>
+            </div>
+        </div>
+    </div>
 
-            <!-- Enhanced Search -->
+    <div id="appLayout" style="display: none;">
+        <aside class="collections-panel">
+            <div class="collections-header">
+                <span>Collections</span>
+                <span style="font-size: 0.875rem; color: var(--text-secondary);" id="totalLinksCount">0</span>
+            </div>
+            <div id="collectionsList"></div>
+            <button class="add-collection-btn" onclick="addNewCollection()">+ New Collection</button>
+        </aside>
+        
+        <main>
             <div class="search-section">
                 <div class="search-container">
                     <div class="search-input-wrapper">
@@ -886,16 +978,11 @@
                             placeholder="Search your links, or try 'design tools' or 'recent docs'..."
                             id="mainSearch"
                             oninput="handleSearch()"
-                            onfocus="showSearchSuggestions()"
                         >
-                    </div>
-                    <div class="search-suggestions" id="searchSuggestions">
-                        <!-- Dynamic suggestions will appear here -->
                     </div>
                 </div>
             </div>
 
-            <!-- Enhanced Filters -->
             <div class="filters-section">
                 <div class="filter-group">
                     <div class="filter-label">Categories:</div>
@@ -922,80 +1009,87 @@
                 </div>
             </div>
 
-            <!-- Links Display -->
-            <div class="links-grid" id="linksContainer">
-                <!-- Links will be dynamically generated here -->
+            <div id="linksContainerWrapper">
+                <div class="links-grid" id="linksContainer"></div>
             </div>
-
-            <!-- Quick Add Section -->
-            <div class="quick-add-section" id="quickAddSection" style="display: none;">
-                <div class="welcome-action" onclick="openAddModal()">
-                    <div class="action-icon">➕</div>
-                    <div class="action-title">Add Your First Link</div>
-                    <div class="action-description">Start building your collection</div>
-                </div>
+            
+            <div id="emptyState" style="display: none;" class="empty-state">
+                <h3>This collection is empty</h3>
+                <p>Add a new link to get started organizing your workflow!</p>
+                <button class="quick-add-btn" onclick="openAddModal()">Add Link to Collection</button>
             </div>
-        </div>
+        </main>
     </div>
+</div>
 
-    <!-- Floating Action Menu -->
-    <div class="floating-menu">
-        <div class="fab-menu" id="fabMenu">
-            <a href="#" class="fab-item" onclick="openAddModal()">
-                <span>➕</span> Add Link
-            </a>
-            <a href="#" class="fab-item" onclick="importFromFile()">
-                <span>📥</span> Import
-            </a>
-            <a href="#" class="fab-item" onclick="exportLinks()">
-                <span>📤</span> Export
-            </a>
-            <a href="#" class="fab-item" onclick="toggleInsights()">
-                <span>📊</span> Insights
-            </a>
-        </div>
-        <button class="fab-main" onclick="toggleFabMenu()" id="fabMain">
-            ➕
-        </button>
+<div class="floating-menu">
+    <div class="fab-menu" id="fabMenu">
+        <a href="#" class="fab-item" onclick="openAddModal()">
+            <span>➕</span> Add Link
+        </a>
+        <a href="#" class="fab-item" onclick="importFromFile()">
+            <span>📥</span> Import
+        </a>
+        <a href="#" class="fab-item" onclick="exportLinks()">
+            <span>📤</span> Export
+        </a>
+        <a href="#" class="fab-item" onclick="showAnalytics()">
+            <span>📊</span> Analytics
+        </a>
     </div>
+    <button class="fab-main" onclick="toggleFabMenu()" id="fabMain">
+        ➕
+    </button>
+</div>
 
-    <!-- Enhanced Modal -->
-    <div class="modal" id="addModal" onclick="closeModalOnOutside(event)">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 style="margin-bottom: 0.5rem;">Add New Link</h2>
-                <p style="color: var(--text-secondary); margin-bottom: 2rem;">
-                    Save and organize your important links with smart categorization
-                </p>
+<div class="modal" id="addModal" onclick="closeModalOnOutside(event)">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle">Add New Link</h2>
+            <p style="color: var(--text-secondary);">
+                Save and organize your important links with smart categorization
+            </p>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">URL *</label>
+            <input 
+                type="url" 
+                id="linkUrl" 
+                class="form-input"
+                placeholder="https://example.com" 
+                oninput="autoDetectMetadata()"
+            >
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Link Name *</label>
+            <input 
+                type="text" 
+                id="linkName" 
+                class="form-input"
+                placeholder="My Awesome Project" 
+            >
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Notes (Optional)</label>
+            <textarea 
+                id="linkNotes" 
+                class="form-textarea"
+                placeholder="This link is useful for..." 
+                rows="3"
+            ></textarea>
+        </div>
+        
+        <div class="form-grid">
+            <div class="form-group">
+                <label class="form-label">Collection *</label>
+                <select id="linkCollection" class="form-select"></select>
             </div>
-            
-            <div style="margin-bottom: 1.5rem;">
-                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Link Name</label>
-                <input 
-                    type="text" 
-                    id="linkName" 
-                    placeholder="My Project" 
-                    style="width: 100%; padding: 1rem; background: var(--bg-input); border: 1px solid var(--border-subtle); border-radius: 8px; color: var(--text-primary);"
-                >
-            </div>
-            
-            <div style="margin-bottom: 1.5rem;">
-                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">URL</label>
-                <input 
-                    type="url" 
-                    id="linkUrl" 
-                    placeholder="https://example.com" 
-                    style="width: 100%; padding: 1rem; background: var(--bg-input); border: 1px solid var(--border-subtle); border-radius: 8px; color: var(--text-primary);"
-                    oninput="autoDetectMetadata()"
-                >
-            </div>
-            
-            <div style="margin-bottom: 2rem;">
-                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Category (Auto-detected)</label>
-                <select 
-                    id="linkCategory" 
-                    style="width: 100%; padding: 1rem; background: var(--bg-input); border: 1px solid var(--border-subtle); border-radius: 8px; color: var(--text-primary);"
-                >
+            <div class="form-group">
+                <label class="form-label">Category (Auto-detected)</label>
+                <select id="linkCategory" class="form-select">
                     <option value="general">🔗 General</option>
                     <option value="design">🎨 Design</option>
                     <option value="dev">⚡ Development</option>
@@ -1004,212 +1098,256 @@
                     <option value="recruiting">👥 Recruiting</option>
                 </select>
             </div>
-            
-            <div style="display: flex; gap: 1rem; justify-content: flex-end;">
-                <button 
-                    onclick="closeModal()" 
-                    style="padding: 0.75rem 1.5rem; background: var(--glass-bg); border: 1px solid var(--border-subtle); border-radius: 8px; color: var(--text-secondary); cursor: pointer;"
-                >
-                    Cancel
-                </button>
-                <button 
-                    onclick="addNewLink()" 
-                    style="padding: 0.75rem 1.5rem; background: var(--gradient-primary); border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer;"
-                >
-                    Save Link
-                </button>
-            </div>
+        </div>
+        
+        <div class="modal-actions">
+            <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+            <button class="btn-primary" onclick="saveLink()" id="saveButton">Save Link</button>
         </div>
     </div>
+</div>
 
-    <!-- Toast Container -->
-    <div class="toast-container" id="toastContainer">
-        <!-- Toast notifications will appear here -->
-    </div>
+<div class="toast-container" id="toastContainer"></div>
 
-    <script>
-        // Enhanced state management
-        let appState = {
-            links: [],
-            currentView: 'grid',
-            currentSort: 'recent',
-            currentFilter: 'all',
-            searchQuery: '',
-            fabMenuOpen: false,
-            insightsVisible: false,
-            collections: [{ id: 'all', name: 'All Links', links: [] }]
-        };
+<script>
+    let appState = {
+        links: [],
+        collections: [
+            { id: 'all', name: 'All Links', type: 'smart' },
+            { id: 'recent', name: 'Recently Added', type: 'smart' },
+            { id: 'c_work', name: 'Work', type: 'manual' },
+            { id: 'c_personal', name: 'Personal', type: 'manual' },
+        ],
+        activeCollectionId: 'all',
+        currentView: 'grid',
+        currentSort: 'recent',
+        currentFilter: 'all',
+        searchQuery: '',
+        fabMenuOpen: false,
+        currentTheme: 'dark',
+        editingLinkId: null
+    };
 
-        // Enhanced link management
-        const linkManager = {
-            autoTag(url, name) {
-                const urlLower = url.toLowerCase();
-                const nameLower = name.toLowerCase();
-                
-                const patterns = {
-                    design: ['figma', 'canva', 'sketch', 'adobe', 'dribbble'],
-                    dev: ['github', 'stackoverflow', 'codepen', 'replit', 'vercel'],
-                    docs: ['notion', 'docs.google', 'confluence', 'gitbook'],
-                    communication: ['slack', 'discord', 'teams', 'zoom'],
-                    recruiting: ['linkedin', 'greenhouse', 'lever', 'workday']
-                };
-                
-                for (const [category, keywords] of Object.entries(patterns)) {
-                    if (keywords.some(keyword => 
-                        urlLower.includes(keyword) || nameLower.includes(keyword)
-                    )) {
-                        return category;
-                    }
+    const linkManager = {
+        autoTag(url, name) {
+            const urlLower = url.toLowerCase();
+            const nameLower = name.toLowerCase();
+            
+            const patterns = {
+                design: ['figma', 'canva', 'sketch', 'adobe', 'dribbble', 'behance'],
+                dev: ['github', 'gitlab', 'stackoverflow', 'codepen', 'replit', 'vercel', 'netlify'],
+                docs: ['notion', 'docs.google', 'confluence', 'gitbook', 'wiki'],
+                communication: ['slack', 'discord', 'teams', 'zoom', 'meet'],
+                recruiting: ['linkedin', 'greenhouse', 'lever', 'workday', 'indeed']
+            };
+            
+            for (const [category, keywords] of Object.entries(patterns)) {
+                if (keywords.some(keyword => 
+                    urlLower.includes(keyword) || nameLower.includes(keyword)
+                )) {
+                    return category;
                 }
-                
-                return 'general';
-            },
-
-            async fetchMetadata(url) {
-                try {
-                    // Simulate metadata fetching
-                    await new Promise(resolve => setTimeout(resolve, 500));
-                    
-                    const domain = new URL(url).hostname;
-                    return {
-                        title: `Page from ${domain}`,
-                        description: 'Auto-detected description',
-                        favicon: `https://www.google.com/s2/favicons?domain=${domain}&sz=32`
-                    };
-                } catch (error) {
-                    return null;
-                }
-            },
-
-            createLink(name, url, category = null) {
-                const id = Date.now() + Math.random();
-                const detectedCategory = category || this.autoTag(url, name);
-                
-                return {
-                    id,
-                    name,
-                    url,
-                    category: detectedCategory,
-                    createdAt: new Date().toISOString(),
-                    lastUsed: null,
-                    useCount: 0,
-                    metadata: {}
-                };
             }
-        };
+            
+            return 'general';
+        },
 
-        // Enhanced UI management
-        const uiManager = {
-            showToast(message, type = 'success') {
-                const container = document.getElementById('toastContainer');
-                const toast = document.createElement('div');
-                toast.className = `toast ${type}`;
+        createLink(name, url, category = null, collectionId = null, notes = '') {
+            const id = `l_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+            const detectedCategory = category || this.autoTag(url, name);
+            
+            return {
+                id,
+                name,
+                url,
+                notes,
+                category: detectedCategory,
+                collectionId: collectionId || 'c_work',
+                createdAt: new Date().toISOString(),
+                lastUsed: null,
+                useCount: 0,
+                metadata: {}
+            };
+        }
+    };
+
+    const uiManager = {
+        showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : '⚠️';
+            toast.innerHTML = `
+                <span style="font-size: 1.25rem;">${icon}</span>
+                <span>${message}</span>
+            `;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => toast.classList.add('show'), 100);
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => container.removeChild(toast), 300);
+            }, 4000);
+        },
+
+        updateHeaderStats() {
+            const linkCount = appState.links.length;
+            const collectionsCount = appState.collections.filter(c => c.type === 'manual').length;
+            const weeklyActivity = appState.links.filter(link => {
+                const created = new Date(link.createdAt);
+                const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+                return created > weekAgo;
+            }).length;
+
+            document.getElementById('linkCountHeader').textContent = linkCount;
+            document.getElementById('collectionsCountHeader').textContent = collectionsCount;
+            document.getElementById('weeklyActivityHeader').textContent = weeklyActivity;
+            document.getElementById('totalLinksCount').textContent = linkCount;
+        },
+
+        renderCollections() {
+            const container = document.getElementById('collectionsList');
+            
+            container.innerHTML = appState.collections.map(collection => {
+                let count = 0;
                 
-                const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : '⚠️';
-                toast.innerHTML = `
-                    <span style="font-size: 1.25rem;">${icon}</span>
-                    <span>${message}</span>
-                `;
-                
-                container.appendChild(toast);
-                
-                // Animate in
-                setTimeout(() => toast.classList.add('show'), 100);
-                
-                // Remove after delay
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                    setTimeout(() => container.removeChild(toast), 300);
-                }, 3000);
-            },
-
-            updateHeaderStats() {
-                const linkCount = appState.links.length;
-                const collectionsCount = appState.collections.length;
-                const weeklyActivity = appState.links.filter(link => {
-                    const created = new Date(link.createdAt);
-                    const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-                    return created > weekAgo;
-                }).length;
-
-                document.getElementById('linkCountHeader').textContent = linkCount;
-                document.getElementById('collectionsCountHeader').textContent = collectionsCount;
-                document.getElementById('weeklyActivityHeader').textContent = weeklyActivity;
-            },
-
-            renderCategoryFilters() {
-                const categories = ['all', ...new Set(appState.links.map(link => link.category))];
-                const container = document.getElementById('categoryFilters');
-                
-                container.innerHTML = categories.map(category => {
-                    const count = category === 'all' ? appState.links.length : 
-                        appState.links.filter(link => link.category === category).length;
-                    
-                    const icon = this.getCategoryIcon(category);
-                    const isActive = appState.currentFilter === category ? 'active' : '';
-                    
-                    return `
-                        <div class="filter-chip ${isActive}" onclick="filterByCategory('${category}')">
-                            <span>${icon}</span> ${this.formatCategory(category)} (${count})
-                        </div>
-                    `;
-                }).join('');
-            },
-
-            getCategoryIcon(category) {
-                const icons = {
-                    all: '🔗',
-                    design: '🎨',
-                    dev: '⚡',
-                    docs: '📄',
-                    communication: '💬',
-                    recruiting: '👥',
-                    general: '🔗'
-                };
-                return icons[category] || '🔗';
-            },
-
-            formatCategory(category) {
-                return category === 'all' ? 'All' : 
-                    category.charAt(0).toUpperCase() + category.slice(1);
-            },
-
-            renderLinks() {
-                const container = document.getElementById('linksContainer');
-                const filteredLinks = this.getFilteredLinks();
-                const sortedLinks = this.getSortedLinks(filteredLinks);
-                
-                if (sortedLinks.length === 0) {
-                    if (appState.searchQuery) {
-                        container.innerHTML = `
-                            <div style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
-                                <div style="font-size: 3rem; margin-bottom: 1rem;">🔍</div>
-                                <h3>No links found</h3>
-                                <p style="color: var(--text-secondary);">Try adjusting your search or filters</p>
-                            </div>
-                        `;
-                    } else {
-                        document.getElementById('quickAddSection').style.display = 'block';
-                        container.style.display = 'none';
-                        return;
+                if (collection.type === 'smart') {
+                    if (collection.id === 'all') {
+                        count = appState.links.length;
+                    } else if (collection.id === 'recent') {
+                        const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+                        count = appState.links.filter(l => new Date(l.createdAt) > weekAgo).length;
                     }
                 } else {
-                    document.getElementById('quickAddSection').style.display = 'none';
-                    container.style.display = 'grid';
+                    count = appState.links.filter(l => l.collectionId === collection.id).length;
                 }
                 
-                container.innerHTML = sortedLinks.map(link => this.renderLinkCard(link)).join('');
-            },
-
-            renderLinkCard(link) {
-                const favicon = link.metadata?.favicon || 
-                    `https://www.google.com/s2/favicons?domain=${new URL(link.url).hostname}&sz=32`;
-                
-                const relativeTime = this.getRelativeTime(new Date(link.createdAt));
-                const categoryClass = `tag-${link.category}`;
+                const icon = collection.type === 'smart' ? '✨' : '📁';
+                const isActive = collection.id === appState.activeCollectionId ? 'active' : '';
                 
                 return `
-                    <div class="link-card animate-in" onclick="openLink('${link.url}', ${link.id})">
+                    <div class="collection-item ${isActive}" onclick="setActiveCollection('${collection.id}')">
+                        <span>${icon} ${collection.name}</span>
+                        <span class="collection-count">${count}</span>
+                    </div>
+                `;
+            }).join('');
+        },
+
+        renderCategoryFilters() {
+            const categories = ['all', ...new Set(appState.links.map(link => link.category))];
+            const container = document.getElementById('categoryFilters');
+            
+            container.innerHTML = categories.map(category => {
+                const count = category === 'all' ? appState.links.length : 
+                    appState.links.filter(link => link.category === category).length;
+                
+                const icon = this.getCategoryIcon(category);
+                const isActive = appState.currentFilter === category ? 'active' : '';
+                
+                return `
+                    <div class="filter-chip ${isActive}" onclick="filterByCategory('${category}')">
+                        <span>${icon}</span> ${this.formatCategory(category)} (${count})
+                    </div>
+                `;
+            }).join('');
+        },
+
+        getCategoryIcon(category) {
+            const icons = {
+                all: '🔗',
+                design: '🎨',
+                dev: '⚡',
+                docs: '📄',
+                communication: '💬',
+                recruiting: '👥',
+                general: '🔗'
+            };
+            return icons[category] || '🔗';
+        },
+
+        formatCategory(category) {
+            return category === 'all' ? 'All' : 
+                category.charAt(0).toUpperCase() + category.slice(1);
+        },
+
+        getVisibleLinks() {
+            let visibleLinks;
+            const activeCollection = appState.collections.find(c => c.id === appState.activeCollectionId);
+
+            if (activeCollection.type === 'smart') {
+                if (activeCollection.id === 'recent') {
+                    const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+                    visibleLinks = appState.links.filter(l => new Date(l.createdAt) > weekAgo);
+                } else { // 'all'
+                    visibleLinks = appState.links;
+                }
+            } else {
+                visibleLinks = appState.links.filter(l => l.collectionId === appState.activeCollectionId);
+            }
+
+            // Apply category filter
+            if (appState.currentFilter !== 'all') {
+                visibleLinks = visibleLinks.filter(link => link.category === appState.currentFilter);
+            }
+
+            // Apply search filter
+            if (appState.searchQuery) {
+                const query = appState.searchQuery.toLowerCase();
+                visibleLinks = visibleLinks.filter(link => 
+                    link.name.toLowerCase().includes(query) ||
+                    link.url.toLowerCase().includes(query) ||
+                    link.category.toLowerCase().includes(query) ||
+                    (link.notes && link.notes.toLowerCase().includes(query))
+                );
+            }
+
+            return this.getSortedLinks(visibleLinks);
+        },
+
+        getSortedLinks(links) {
+            const sorted = [...links];
+            
+            switch (appState.currentSort) {
+                case 'recent':
+                    return sorted.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                case 'popular':
+                    return sorted.sort((a, b) => (b.useCount || 0) - (a.useCount || 0));
+                case 'alphabetical':
+                    return sorted.sort((a, b) => a.name.localeCompare(b.name));
+                default:
+                    return sorted;
+            }
+        },
+
+        renderLinks() {
+            const container = document.getElementById('linksContainer');
+            const emptyState = document.getElementById('emptyState');
+            const wrapper = document.getElementById('linksContainerWrapper');
+            const linksToRender = this.getVisibleLinks();
+
+            if (linksToRender.length === 0) {
+                container.innerHTML = '';
+                wrapper.style.display = 'none';
+                emptyState.style.display = 'block';
+            } else {
+                wrapper.style.display = 'block';
+                emptyState.style.display = 'none';
+                container.innerHTML = linksToRender.map(link => this.renderLinkCard(link)).join('');
+            }
+        },
+
+        renderLinkCard(link) {
+            const favicon = `https://www.google.com/s2/favicons?domain=${new URL(link.url).hostname}&sz=32`;
+            const relativeTime = this.getRelativeTime(new Date(link.createdAt));
+            const categoryClass = `tag-${link.category}`;
+            
+            return `
+                <div class="link-card animate-in" data-link-id="${link.id}">
+                    <div>
                         <div class="link-header">
                             <div class="link-favicon">
                                 <img src="${favicon}" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
@@ -1217,9 +1355,11 @@
                             </div>
                             <div class="link-info">
                                 <div class="link-name">${this.escapeHtml(link.name)}</div>
-                                <div class="link-url">${this.truncateUrl(link.url)}</div>
+                                <a href="${link.url}" target="_blank" class="link-url" onclick="event.stopPropagation(); openLink('${link.url}', '${link.id}')">${this.truncateUrl(link.url)}</a>
                             </div>
                         </div>
+                        
+                        ${link.notes ? `<div class="link-notes">${this.escapeHtml(link.notes)}</div>` : ''}
                         
                         <div class="link-metadata">
                             <div class="metadata-item">
@@ -1237,402 +1377,600 @@
                                 ${this.getCategoryIcon(link.category)} ${this.formatCategory(link.category)}
                             </div>
                         </div>
-                        
-                        <div class="link-actions">
-                            <button class="action-btn" onclick="event.stopPropagation(); copyToClipboard('${link.url}')" title="Copy URL">
-                                📋
-                            </button>
-                            <button class="action-btn" onclick="event.stopPropagation(); editLink(${link.id})" title="Edit">
-                                ✏️
-                            </button>
-                            <button class="action-btn" onclick="event.stopPropagation(); deleteLink(${link.id})" title="Delete">
-                                🗑️
-                            </button>
-                        </div>
                     </div>
-                `;
-            },
+                    
+                    <div class="link-actions">
+                        <button class="action-btn" onclick="event.stopPropagation(); copyToClipboard('${link.url}')" title="Copy URL">
+                            📋
+                        </button>
+                        <button class="action-btn" onclick="event.stopPropagation(); editLink('${link.id}')" title="Edit">
+                            ✏️
+                        </button>
+                        <button class="action-btn" onclick="event.stopPropagation(); deleteLink('${link.id}')" title="Delete">
+                            🗑️
+                        </button>
+                        <button class="action-btn" onclick="event.stopPropagation(); moveToCollection('${link.id}')" title="Move">
+                            📁
+                        </button>
+                        <button class="action-btn" onclick="event.stopPropagation(); mockFeature('AI Summary')" title="AI Summary">
+                            ✨
+                        </button>
+                    </div>
+                </div>
+            `;
+        },
 
-            getFilteredLinks() {
-                let filtered = appState.links;
-                
-                // Apply category filter
-                if (appState.currentFilter !== 'all') {
-                    filtered = filtered.filter(link => link.category === appState.currentFilter);
-                }
-                
-                // Apply search filter
-                if (appState.searchQuery) {
-                    const query = appState.searchQuery.toLowerCase();
-                    filtered = filtered.filter(link => 
-                        link.name.toLowerCase().includes(query) ||
-                        link.url.toLowerCase().includes(query) ||
-                        link.category.toLowerCase().includes(query)
-                    );
-                }
-                
-                return filtered;
-            },
-
-            getSortedLinks(links) {
-                const sorted = [...links];
-                
-                switch (appState.currentSort) {
-                    case 'recent':
-                        return sorted.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-                    case 'popular':
-                        return sorted.sort((a, b) => (b.useCount || 0) - (a.useCount || 0));
-                    case 'alphabetical':
-                        return sorted.sort((a, b) => a.name.localeCompare(b.name));
-                    default:
-                        return sorted;
-                }
-            },
-
-            getRelativeTime(date) {
-                const now = new Date();
-                const diff = now - date;
-                const minutes = Math.floor(diff / 60000);
-                const hours = Math.floor(diff / 3600000);
-                const days = Math.floor(diff / 86400000);
-                
-                if (minutes < 1) return 'Just now';
-                if (minutes < 60) return `${minutes}m ago`;
-                if (hours < 24) return `${hours}h ago`;
-                if (days < 7) return `${days}d ago`;
-                
-                return date.toLocaleDateString();
-            },
-
-            truncateUrl(url) {
-                try {
-                    const urlObj = new URL(url);
-                    const domain = urlObj.hostname.replace('www.', '');
-                    return domain.length > 30 ? domain.substring(0, 27) + '...' : domain;
-                } catch {
-                    return url.length > 30 ? url.substring(0, 27) + '...' : url;
-                }
-            },
-
-            escapeHtml(text) {
-                const div = document.createElement('div');
-                div.textContent = text;
-                return div.innerHTML;
-            }
-        };
-
-        // Core functions
-        function showQuickStart() {
-            document.getElementById('welcomeState').style.display = 'none';
-            document.getElementById('mainApp').style.display = 'block';
-            document.getElementById('quickAddSection').style.display = 'block';
-            openAddModal();
-        }
-
-        function openAddModal() {
-            document.getElementById('addModal').classList.add('show');
-            setTimeout(() => document.getElementById('linkName').focus(), 100);
-        }
-
-        function closeModal() {
-            document.getElementById('addModal').classList.remove('show');
-        }
-
-        function closeModalOnOutside(event) {
-            if (event.target === event.currentTarget) {
-                closeModal();
-            }
-        }
-
-        async function autoDetectMetadata() {
-            const url = document.getElementById('linkUrl').value;
-            if (!url) return;
+        populateModalCollections() {
+            const select = document.getElementById('linkCollection');
+            const manualCollections = appState.collections.filter(c => c.type === 'manual');
             
+            select.innerHTML = manualCollections.map(c => 
+                `<option value="${c.id}">${c.name}</option>`
+            ).join('');
+            
+            // Set default collection
+            if (appState.activeCollectionId !== 'all' && appState.activeCollectionId !== 'recent') {
+                select.value = appState.activeCollectionId;
+            } else if (manualCollections.length > 0) {
+                select.value = manualCollections[0].id;
+            }
+        },
+
+        getRelativeTime(date) {
+            const now = new Date();
+            const diff = now - date;
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+            
+            if (minutes < 1) return 'Just now';
+            if (minutes < 60) return `${minutes}m ago`;
+            if (hours < 24) return `${hours}h ago`;
+            if (days < 7) return `${days}d ago`;
+            
+            return date.toLocaleDateString();
+        },
+
+        truncateUrl(url) {
             try {
-                const metadata = await linkManager.fetchMetadata(url);
-                if (metadata && !document.getElementById('linkName').value) {
-                    document.getElementById('linkName').value = metadata.title;
-                }
-                
-                // Auto-select category
-                const category = linkManager.autoTag(url, metadata?.title || '');
-                document.getElementById('linkCategory').value = category;
-            } catch (error) {
-                console.log('Could not fetch metadata');
-            }
-        }
-
-        function addNewLink() {
-            const name = document.getElementById('linkName').value.trim();
-            const url = document.getElementById('linkUrl').value.trim();
-            const category = document.getElementById('linkCategory').value;
-            
-            if (!name || !url) {
-                uiManager.showToast('Please fill in all fields', 'error');
-                return;
-            }
-            
-            try {
-                new URL(url);
+                const urlObj = new URL(url);
+                const domain = urlObj.hostname.replace('www.', '');
+                return domain.length > 35 ? domain.substring(0, 32) + '...' : domain;
             } catch {
-                uiManager.showToast('Please enter a valid URL', 'error');
-                return;
+                return url.length > 35 ? url.substring(0, 32) + '...' : url;
             }
-            
-            const newLink = linkManager.createLink(name, url, category);
-            appState.links.push(newLink);
-            
-            // Reset form
-            document.getElementById('linkName').value = '';
-            document.getElementById('linkUrl').value = '';
-            document.getElementById('linkCategory').value = 'general';
-            
-            closeModal();
-            updateDisplay();
-            
-            // Show main app if this is the first link
-            if (appState.links.length === 1) {
-                document.getElementById('welcomeState').style.display = 'none';
-                document.getElementById('mainApp').style.display = 'block';
+        },
+
+        escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    };
+
+    // Storage functions
+    function saveToStorage() {
+        const dataToSave = {
+            ...appState,
+            lastSaved: new Date().toISOString()
+        };
+        try {
+            localStorage.setItem('workflowOSLinkManager', JSON.stringify(dataToSave));
+        } catch (error) {
+            console.error('Failed to save to localStorage:', error);
+            uiManager.showToast('Failed to save data locally', 'error');
+        }
+    }
+
+    function loadFromStorage() {
+        try {
+            const storedData = localStorage.getItem('workflowOSLinkManager');
+            if (storedData) {
+                const parsedData = JSON.parse(storedData);
+                // Merge with defaults to handle new properties
+                appState = { ...appState, ...parsedData };
             }
-            
-            uiManager.showToast(`Added "${name}" to your collection!`);
+        } catch (error) {
+            console.error('Failed to load from localStorage:', error);
+            uiManager.showToast('Failed to load saved data', 'warning');
         }
+    }
 
-        function openLink(url, linkId) {
-            // Track usage
-            const link = appState.links.find(l => l.id === linkId);
-            if (link) {
-                link.useCount = (link.useCount || 0) + 1;
-                link.lastUsed = new Date().toISOString();
-                updateDisplay();
-            }
-            
-            window.open(url, '_blank');
-        }
-
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                uiManager.showToast('URL copied to clipboard!');
-            });
-        }
-
-        function deleteLink(linkId) {
-            if (confirm('Are you sure you want to delete this link?')) {
-                appState.links = appState.links.filter(link => link.id !== linkId);
-                updateDisplay();
-                uiManager.showToast('Link deleted');
-            }
-        }
-
-        function filterByCategory(category) {
-            appState.currentFilter = category;
-            
-            // Update filter chips
-            document.querySelectorAll('.filter-chip').forEach(chip => {
-                chip.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            
-            uiManager.renderLinks();
-        }
-
-        function sortLinks(sortType) {
-            appState.currentSort = sortType;
-            
-            // Update sort chips
-            document.querySelectorAll('.filter-chips').forEach(group => {
-                group.querySelectorAll('.filter-chip').forEach(chip => {
-                    chip.classList.remove('active');
-                });
-            });
-            event.target.classList.add('active');
-            
-            uiManager.renderLinks();
-        }
-
-        function handleSearch() {
-            appState.searchQuery = document.getElementById('mainSearch').value;
-            uiManager.renderLinks();
-        }
-
-        function switchView(viewType) {
-            appState.currentView = viewType;
-            
-            document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(viewType + 'ViewBtn').classList.add('active');
-            
-            // You could implement different view styles here
-            uiManager.renderLinks();
-        }
-
-        function toggleFabMenu() {
-            appState.fabMenuOpen = !appState.fabMenuOpen;
-            const menu = document.getElementById('fabMenu');
-            const main = document.getElementById('fabMain');
-            
-            if (appState.fabMenuOpen) {
-                menu.classList.add('show');
-                main.style.transform = 'rotate(45deg)';
-            } else {
-                menu.classList.remove('show');
-                main.style.transform = 'rotate(0deg)';
-            }
-        }
-
-        function toggleInsights() {
-            appState.insightsVisible = !appState.insightsVisible;
-            const panel = document.getElementById('insightsPanel');
-            
-            if (appState.insightsVisible) {
-                panel.style.display = 'block';
-                updateInsights();
-            } else {
-                panel.style.display = 'none';
-            }
-        }
-
-        function updateInsights() {
-            const totalClicks = appState.links.reduce((sum, link) => sum + (link.useCount || 0), 0);
-            const thisWeekLinks = appState.links.filter(link => {
-                const created = new Date(link.createdAt);
-                const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-                return created > weekAgo;
-            }).length;
-            
-            const categoryCount = {};
-            appState.links.forEach(link => {
-                categoryCount[link.category] = (categoryCount[link.category] || 0) + 1;
-            });
-            
-            const topCategory = Object.entries(categoryCount)
-                .sort(([,a], [,b]) => b - a)[0]?.[0] || 'none';
-            
-            const productivityScore = Math.min(100, Math.round(
-                (totalClicks / Math.max(1, appState.links.length)) * 20
-            ));
-            
-            document.getElementById('mostUsedCount').textContent = totalClicks;
-            document.getElementById('weeklyGrowth').textContent = `+${thisWeekLinks}`;
-            document.getElementById('topCategory').textContent = uiManager.formatCategory(topCategory);
-            document.getElementById('productivityScore').textContent = `${productivityScore}%`;
-        }
-
-        function updateDisplay() {
+    // Main functions
+    function updateDisplay() {
+        saveToStorage();
+        const hasLinks = appState.links.length > 0;
+        
+        document.getElementById('welcomeState').style.display = hasLinks ? 'none' : 'block';
+        document.getElementById('appLayout').style.display = hasLinks ? 'grid' : 'none';
+        
+        if (hasLinks) {
             uiManager.updateHeaderStats();
+            uiManager.renderCollections();
             uiManager.renderCategoryFilters();
             uiManager.renderLinks();
+        }
+    }
+
+    function showQuickStart() {
+        document.getElementById('welcomeState').style.display = 'none';
+        document.getElementById('appLayout').style.display = 'grid';
+        openAddModal();
+    }
+
+    function openAddModal() {
+        appState.editingLinkId = null;
+        document.getElementById('modalTitle').textContent = 'Add New Link';
+        document.getElementById('saveButton').textContent = 'Save Link';
+        
+        // Clear form
+        document.getElementById('linkName').value = '';
+        document.getElementById('linkUrl').value = '';
+        document.getElementById('linkNotes').value = '';
+        document.getElementById('linkCategory').value = 'general';
+        
+        uiManager.populateModalCollections();
+        document.getElementById('addModal').classList.add('show');
+        setTimeout(() => document.getElementById('linkUrl').focus(), 100);
+    }
+
+    function editLink(linkId) {
+        const link = appState.links.find(l => l.id === linkId);
+        if (!link) return;
+        
+        appState.editingLinkId = linkId;
+        document.getElementById('modalTitle').textContent = 'Edit Link';
+        document.getElementById('saveButton').textContent = 'Update Link';
+        
+        // Populate form
+        document.getElementById('linkName').value = link.name;
+        document.getElementById('linkUrl').value = link.url;
+        document.getElementById('linkNotes').value = link.notes || '';
+        document.getElementById('linkCategory').value = link.category;
+        
+        uiManager.populateModalCollections();
+        document.getElementById('linkCollection').value = link.collectionId;
+        
+        document.getElementById('addModal').classList.add('show');
+    }
+
+    function closeModal() {
+        document.getElementById('addModal').classList.remove('show');
+    }
+
+    function closeModalOnOutside(event) {
+        if (event.target === event.currentTarget) {
+            closeModal();
+        }
+    }
+
+    async function autoDetectMetadata() {
+        const url = document.getElementById('linkUrl').value;
+        if (!url) return;
+        
+        try {
+            const urlObj = new URL(url);
+            const category = linkManager.autoTag(url, '');
+            document.getElementById('linkCategory').value = category;
             
-            if (appState.insightsVisible) {
-                updateInsights();
+            // Auto-populate name if empty
+            const nameField = document.getElementById('linkName');
+            if (!nameField.value.trim()) {
+                const domain = urlObj.hostname.replace('www.', '');
+                nameField.value = domain.charAt(0).toUpperCase() + domain.slice(1);
+            }
+        } catch (error) {
+            // Invalid URL, ignore
+        }
+    }
+
+    function saveLink() {
+        const name = document.getElementById('linkName').value.trim();
+        const url = document.getElementById('linkUrl').value.trim();
+        const notes = document.getElementById('linkNotes').value.trim();
+        const category = document.getElementById('linkCategory').value;
+        const collectionId = document.getElementById('linkCollection').value;
+        
+        if (!name || !url || !collectionId) {
+            uiManager.showToast('Name, URL, and Collection are required', 'error');
+            return;
+        }
+        
+        try {
+            new URL(url);
+        } catch {
+            uiManager.showToast('Please enter a valid URL', 'error');
+            return;
+        }
+        
+        // Check for duplicates (excluding current editing link)
+        const isDuplicate = appState.links.some(link => 
+            link.url === url && link.id !== appState.editingLinkId
+        );
+        
+        if (isDuplicate) {
+            uiManager.showToast('This URL already exists in your collection', 'warning');
+            return;
+        }
+        
+        if (appState.editingLinkId) {
+            // Update existing link
+            const linkIndex = appState.links.findIndex(l => l.id === appState.editingLinkId);
+            if (linkIndex !== -1) {
+                appState.links[linkIndex] = {
+                    ...appState.links[linkIndex],
+                    name,
+                    url,
+                    notes,
+                    category,
+                    collectionId,
+                    updatedAt: new Date().toISOString()
+                };
+                uiManager.showToast('Link updated successfully!');
+            }
+        } else {
+            // Create new link
+            const newLink = linkManager.createLink(name, url, category, collectionId, notes);
+            appState.links.push(newLink);
+            uiManager.showToast(`Added "${name}" to your collection!`);
+        }
+        
+        closeModal();
+        updateDisplay();
+        
+        // Show main app if this was the first link
+        if (appState.links.length === 1) {
+            document.getElementById('welcomeState').style.display = 'none';
+            document.getElementById('appLayout').style.display = 'grid';
+        }
+    }
+
+    function deleteLink(linkId) {
+        const link = appState.links.find(l => l.id === linkId);
+        if (!link) return;
+        
+        if (confirm(`Are you sure you want to delete "${link.name}"?`)) {
+            appState.links = appState.links.filter(l => l.id !== linkId);
+            updateDisplay();
+            uiManager.showToast('Link deleted', 'warning');
+        }
+    }
+
+    function openLink(url, linkId) {
+        const link = appState.links.find(l => l.id === linkId);
+        if (link) {
+            link.useCount = (link.useCount || 0) + 1;
+            link.lastUsed = new Date().toISOString();
+            updateDisplay();
+        }
+        
+        window.open(url, '_blank');
+    }
+
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            uiManager.showToast('URL copied to clipboard!');
+        }).catch(() => {
+            uiManager.showToast('Failed to copy URL', 'error');
+        });
+    }
+
+    function setActiveCollection(collectionId) {
+        appState.activeCollectionId = collectionId;
+        appState.currentFilter = 'all'; // Reset category filter
+        updateDisplay();
+    }
+
+    function addNewCollection() {
+        const name = prompt('Enter new collection name:');
+        if (name && name.trim()) {
+            const newCollection = {
+                id: `c_${Date.now()}`,
+                name: name.trim(),
+                type: 'manual'
+            };
+            appState.collections.push(newCollection);
+            appState.activeCollectionId = newCollection.id;
+            updateDisplay();
+            uiManager.showToast(`Created collection "${name}"`);
+        }
+    }
+
+    function moveToCollection(linkId) {
+        const link = appState.links.find(l => l.id === linkId);
+        if (!link) return;
+        
+        const manualCollections = appState.collections.filter(c => c.type === 'manual');
+        const options = manualCollections.map(c => `${c.name} (${c.id})`).join('\n');
+        
+        const choice = prompt(`Move "${link.name}" to which collection?\n\n${options}\n\nEnter collection name:`);
+        if (choice) {
+            const targetCollection = manualCollections.find(c => 
+                c.name.toLowerCase() === choice.toLowerCase()
+            );
+            
+            if (targetCollection) {
+                link.collectionId = targetCollection.id;
+                updateDisplay();
+                uiManager.showToast(`Moved to "${targetCollection.name}"`);
+            } else {
+                uiManager.showToast('Collection not found', 'error');
             }
         }
+    }
 
-        function importFromFile() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.json';
-            input.onchange = (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-                
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    try {
-                        const data = JSON.parse(event.target.result);
-                        let importedLinks = [];
-                        let importCount = 0;
-                        
-                        // Handle standard link format
-                        if (Array.isArray(data)) {
-                            importedLinks = data;
-                        } else if (data.links && Array.isArray(data.links)) {
-                            importedLinks = data.links;
-                        }
-                        // Handle WorkflowOS unified_founder_mode.json format
-                        else if (data.tool_links && Array.isArray(data.tool_links)) {
-                            importedLinks = data.tool_links.map(tool => ({
-                                name: tool.name,
-                                url: tool.url,
-                                category: 'dev' // Default category for WorkflowOS tools
-                            }));
-                        }
-                        // Handle WorkflowOS github links format
-                        else if (data.github) {
-                            const githubData = data.github;
-                            importedLinks = [
-                                { name: 'GitHub Repository', url: githubData.repo, category: 'dev' },
-                                { name: 'GitHub Upload', url: githubData.upload, category: 'dev' },
-                                { name: 'GitHub Settings', url: githubData.settings, category: 'dev' },
-                                { name: 'GitHub Pages', url: githubData.pages, category: 'dev' },
-                                { name: 'Live Site', url: githubData.live_site, category: 'dev' }
-                            ].filter(link => link.url && link.url !== 'https://github.com/[your-username]/workflowos' && !link.url.includes('['));
-                        }
-                        // Handle any object with URL-like values
-                        else {
-                            importedLinks = extractUrlsFromObject(data);
-                        }
-                        
-                        // Process and add links
-                        importedLinks.forEach(linkData => {
-                            if (linkData.name && linkData.url && linkData.url.startsWith('http')) {
-                                // Check for duplicates
-                                const isDuplicate = appState.links.some(existingLink => 
-                                    existingLink.url === linkData.url
-                                );
-                                
-                                if (!isDuplicate) {
-                                    const link = linkManager.createLink(
-                                        linkData.name,
-                                        linkData.url,
-                                        linkData.category || 'general'
-                                    );
-                                    appState.links.push(link);
-                                    importCount++;
-                                }
-                            }
-                        });
-                        
-                        updateDisplay();
-                        
-                        if (appState.links.length > 0) {
-                            document.getElementById('welcomeState').style.display = 'none';
-                            document.getElementById('mainApp').style.display = 'block';
-                        }
-                        
-                        if (importCount > 0) {
-                            uiManager.showToast(`Imported ${importCount} links successfully!`);
-                        } else {
-                            uiManager.showToast('No valid links found in file', 'warning');
-                        }
-                        
-                    } catch (error) {
-                        console.error('Import error:', error);
-                        uiManager.showToast('Error importing file - invalid JSON format', 'error');
-                    }
-                };
-                reader.readAsText(file);
-            };
-            input.click();
+    function filterByCategory(category) {
+        appState.currentFilter = category;
+        
+        document.querySelectorAll('#categoryFilters .filter-chip').forEach(chip => {
+            chip.classList.remove('active');
+        });
+        event.target.classList.add('active');
+        
+        uiManager.renderLinks();
+    }
+
+    function sortLinks(sortType) {
+        appState.currentSort = sortType;
+        
+        document.querySelectorAll('.filters-section .filter-chips').forEach(group => {
+            group.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.classList.remove('active');
+            });
+        });
+        event.target.classList.add('active');
+        
+        uiManager.renderLinks();
+    }
+
+    function handleSearch() {
+        appState.searchQuery = document.getElementById('mainSearch').value;
+        uiManager.renderLinks();
+    }
+
+    function toggleTheme() {
+        appState.currentTheme = appState.currentTheme === 'dark' ? 'light' : 'dark';
+        document.body.classList.toggle('light-mode');
+        document.getElementById('themeToggle').textContent = appState.currentTheme === 'dark' ? '☀️' : '🌙';
+        saveToStorage();
+    }
+
+    function toggleFabMenu() {
+        appState.fabMenuOpen = !appState.fabMenuOpen;
+        const menu = document.getElementById('fabMenu');
+        const main = document.getElementById('fabMain');
+        
+        if (appState.fabMenuOpen) {
+            menu.classList.add('show');
+            main.style.transform = 'rotate(45deg)';
+        } else {
+            menu.classList.remove('show');
+            main.style.transform = 'rotate(0deg)';
         }
+    }
 
-        // Helper function to extract URLs from any object
-        function extractUrlsFromObject(obj, prefix = '') {
-            const links = [];
+    // Enhanced import function for WorkflowOS JSON files
+    function importFromFile() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json';
+        input.onchange = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
             
-            function traverse(current, path) {
-                if (typeof current === 'string' && current.startsWith('http')) {
-                    const name = path.split('.').pop().replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
-                    links.push({
-                        name: name || 'Extracted Link',
-                        url: current,
-                        category: 'general'
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const data = JSON.parse(event.target.result);
+                    let importedLinks = [];
+                    let importCount = 0;
+                    
+                    // Handle different WorkflowOS JSON formats
+                    if (Array.isArray(data)) {
+                        importedLinks = data;
+                    } else if (data.links && Array.isArray(data.links)) {
+                        importedLinks = data.links;
+                    }
+                    // Handle WorkflowOS unified_founder_mode.json format
+                    else if (data.tool_links && Array.isArray(data.tool_links)) {
+                        importedLinks = data.tool_links.map(tool => ({
+                            name: tool.name || tool.title || 'Imported Tool',
+                            url: tool.url || tool.link,
+                            category: 'dev',
+                            notes: tool.description || ''
+                        }));
+                    }
+                    // Handle WorkflowOS github links format
+                    else if (data.github) {
+                        const githubData = data.github;
+                        importedLinks = [
+                            { name: 'GitHub Repository', url: githubData.repo, category: 'dev' },
+                            { name: 'GitHub Upload', url: githubData.upload, category: 'dev' },
+                            { name: 'GitHub Settings', url: githubData.settings, category: 'dev' },
+                            { name: 'GitHub Pages', url: githubData.pages, category: 'dev' },
+                            { name: 'Live Site', url: githubData.live_site, category: 'dev' }
+                        ].filter(link => link.url && link.url.startsWith('http') && !link.url.includes('['));
+                    }
+                    // Handle any object with URL-like values
+                    else {
+                        importedLinks = extractUrlsFromObject(data);
+                    }
+                    
+                    // Determine target collection
+                    let targetCollectionId = appState.activeCollectionId;
+                    if (targetCollectionId === 'all' || targetCollectionId === 'recent') {
+                        const manualCollections = appState.collections.filter(c => c.type === 'manual');
+                        targetCollectionId = manualCollections.length > 0 ? manualCollections[0].id : 'c_work';
+                    }
+                    
+                    // Process and add links
+                    importedLinks.forEach(linkData => {
+                        if (linkData.name && linkData.url && linkData.url.startsWith('http')) {
+                            const isDuplicate = appState.links.some(existingLink => 
+                                existingLink.url === linkData.url
+                            );
+                            
+                            if (!isDuplicate) {
+                                const link = linkManager.createLink(
+                                    linkData.name,
+                                    linkData.url,
+                                    linkData.category || 'general',
+                                    targetCollectionId,
+                                    linkData.notes || ''
+                                );
+                                appState.links.push(link);
+                                importCount++;
+                            }
+                        }
                     });
-                } else if (typeof current === 'object' && current !== null) {
-                    Object.entries(current).forEach(([key, value]) => {
-                        const newPath = path ? `${path}.${key}` : key;
-                        traverse(value, newPath);
-                    });
+                    
+                    updateDisplay();
+                    
+                    if (appState.links.length > 0) {
+                        document.getElementById('welcomeState').style.display = 'none';
+                        document.getElementById('appLayout').style.display = 'grid';
+                    }
+                    
+                    if (importCount > 0) {
+                        uiManager.showToast(`Successfully imported ${importCount} WorkflowOS links!`);
+                    } else {
+                        uiManager.showToast('No valid links found in file', 'warning');
+                    }
+                    
+                } catch (error) {
+                    console.error('Import error:', error);
+                    uiManager.showToast('Error importing file - invalid JSON format', 'error');
+                }
+            };
+            reader.readAsText(file);
+        };
+        input.click();
+    }
+
+    function extractUrlsFromObject(obj, prefix = '') {
+        const links = [];
+        
+        function traverse(current, path) {
+            if (typeof current === 'string' && current.startsWith('http')) {
+                const name = path.split('.').pop().replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()) || 'Extracted Link';
+                links.push({
+                    name: name,
+                    url: current,
+                    category: 'general'
+                });
+            } else if (typeof current === 'object' && current !== null) {
+                Object.entries(current).forEach(([key, value]) => {
+                    const newPath = path ? `${path}.${key}` : key;
+                    traverse(value, newPath);
+                });
+            }
+        }
+        
+        traverse(obj, prefix);
+        return links;
+    }
+
+    function exportLinks() {
+        if (appState.links.length === 0) {
+            uiManager.showToast('No links to export', 'error');
+            return;
+        }
+        
+        const exportData = {
+            metadata: {
+                exported: new Date().toISOString(),
+                version: "2.5",
+                source: "WorkflowOS Link Manager Enhanced",
+                count: appState.links.length,
+                collections: appState.collections.filter(c => c.type === 'manual').length
+            },
+            collections: appState.collections.filter(c => c.type === 'manual'),
+            links: appState.links.map(link => ({
+                name: link.name,
+                url: link.url,
+                notes: link.notes,
+                category: link.category,
+                collectionId: link.collectionId,
+                createdAt: link.createdAt,
+                useCount: link.useCount
+            }))
+        };
+        
+        const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `workflowos-enhanced-links-${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        
+        uiManager.showToast('Links exported successfully!');
+    }
+
+    function showAnalytics() {
+        const totalLinks = appState.links.length;
+        const totalClicks = appState.links.reduce((sum, link) => sum + (link.useCount || 0), 0);
+        const mostUsed = appState.links.reduce((max, link) => 
+            (link.useCount || 0) > (max.useCount || 0) ? link : max, { useCount: 0 });
+        
+        const analytics = `📊 WorkflowOS Analytics
+--------------------
+Total Links: ${totalLinks}
+Total Clicks: ${totalClicks}
+Collections: ${appState.collections.filter(c => c.type === 'manual').length}
+
+Most Used: ${mostUsed.name || 'None'} (${mostUsed.useCount || 0} clicks)
+
+Category Breakdown:
+${['design', 'dev', 'docs', 'communication', 'recruiting', 'general']
+.map(cat => uiManager.getCategoryIcon(cat) + ' ' + uiManager.formatCategory(cat) + ': ' + appState.links.filter(l => l.category === cat).length)
+.join('\n')}`;
+
+        alert(analytics);
+    }
+
+    function browseTemplates() {
+        uiManager.showToast('Template browser coming soon! 🚀', 'warning');
+    }
+
+    function mockFeature(featureName) {
+        uiManager.showToast(`${featureName} requires a backend server`, 'warning');
+    }
+
+    // Event listeners
+    document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+            e.preventDefault();
+            openAddModal();
+        }
+        if (e.key === 'Escape') {
+            closeModal();
+            if (appState.fabMenuOpen) {
+                toggleFabMenu();
+            }
+        }
+    });
+
+    document.addEventListener('click', (e) => {
+        if (appState.fabMenuOpen && !e.target.closest('.floating-menu')) {
+            toggleFabMenu();
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadFromStorage();
+        
+        // Set theme
+        if (appState.currentTheme === 'light') {
+            document.body.classList.add('light-mode');
+            document.getElementById('themeToggle').textContent = '🌙';
+        }
+        
+        updateDisplay();
+    });
+</script>
+</body>
+</html>
                 }
             }
             
